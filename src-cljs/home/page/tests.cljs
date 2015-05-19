@@ -14,5 +14,9 @@
   [state]
   [:div
    [:h1 "home"]
-   [:a {:href "/#/test"} "test"]])
+   [:ul
+    [:li
+     [:a {:href "/#/sorter"} "sort things"]]
+    [:li
+     [:a {:href "/#/test"} "test"]]]])
 
