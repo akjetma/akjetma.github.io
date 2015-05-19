@@ -1,16 +1,18 @@
 (ns home.page.sorter)
 
-(defn randomish-color
+(defn random-color
   []
-  (.toString
-   (+ 16r100000 (rand-int 16rEFFFFF))
-   16))
+  (subs 
+   (.toString
+    (+ 16r1000000 (rand-int 16rFFFFFF))
+    16)
+   1))
 
 (defn generate-item
   [rank-init]
   [rank-init 
    {:rank rank-init
-    :color (str "#" (randomish-color))}])
+    :color (str "#" (random-color))}])
 
 (defn generate-items
   [n]
