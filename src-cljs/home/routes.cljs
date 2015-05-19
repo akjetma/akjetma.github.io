@@ -1,6 +1,6 @@
 (ns home.routes
   (:require [secretary.core :as secretary :refer-macros [defroute]]
-            [home.page.tests :as tp]
+            [home.page.home :as home]
             [home.page.sorter :as sorter]))
 
 (defn define-routes!
@@ -9,13 +9,7 @@
     "/" 
     []
     (swap! state assoc 
-           :current-page tp/home-page))
-
-  (defroute test-path 
-    "/test" 
-    []
-    (swap! state assoc 
-           :current-page tp/test-page))
+           :current-page home/page))
 
   (defroute sorter-path
     "/sorter"

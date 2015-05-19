@@ -82,7 +82,7 @@
   [:div.item 
    {:style 
     {:background-color (:color item)
-     :z-index id
+     :z-index (- id)
      :transform (grid-place num-columns (:rank item))}
     :id id}
    ])

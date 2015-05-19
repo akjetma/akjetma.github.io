@@ -14,21 +14,39 @@
 (defonce app-state
   (reagent/atom {}))
 
-(defn nav-counter
+(defn inspector-toggle
   [state]
-  [:h5 "nav count: "(:nav-count @state 0)])
+  [:div#inspector-toggle
+   {:on-click #(swap! state update :show-inspector? not)}
+   "\u2603"])
+
+(defn state-inspector
+  [state]
+  (let [shown? (:show-inspector? @state)]
+    [:div#state-inspector
+     {:style {:height (if shown? "90px" "0px")}}
+     [inspector-toggle state]
+     (when shown?
+       [:div.code-container
+        [:code.edn-map 
+         (for [[k v] (dissoc @state :current-page)]
+           [:div.pair
+            [:span.key (str k)]
+            [:span.val (str v)]])]])]))
 
 (defn app
   [state]
   [:div
-   [nav-counter state]
-   [(:current-page @state) state]])
+   [state-inspector state]
+   [:div#page
+    [(:current-page @state) state]]])
 
 (defn initialize-state!
   [state]
   (reset! 
    state 
-   {:initialized true
+   {:show-inspector? false
+    :initialized true
     :nav-count 0
     :current-page test-pages/blank-page}))
 
