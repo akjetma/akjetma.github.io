@@ -1,1 +1,13 @@
-h1 {color:blue;}
+.sortable-list {
+    position: relative;
+    margin-top: 10px;
+}
+
+.sortable-list > .item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    transition: all 1.5s ease-in-out;
+}
