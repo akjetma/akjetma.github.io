@@ -22,10 +22,11 @@
     generate-item 
     (range n))))
 
-(defn shuffle-all!
+(defn shuffle-items!
   [state]
   (swap! 
-   state update-in [:page :items] 
+   state 
+   update-in [:page :items] 
    (fn 
      [item-map]
      (let [ranks (map :rank (vals item-map))
@@ -39,30 +40,82 @@
          shuffled
          item-map))))))
 
+(defn reverse-items!
+  [state]
+  (swap!
+   state
+   update-in [:page :items]
+   (fn 
+     [item-map]
+     (let [item-max (dec (count item-map))]
+       (into 
+        {}
+        (map 
+         (fn 
+           [[id item]]
+           [id (update item :rank #(- item-max %))])
+         item-map))))))
+
+(defn color-sort!
+  [state]
+  (swap!
+   state
+   update-in [:page :items]
+   (fn 
+     [item-map]
+     (let [sorted (sort-by #(-> % (get 1) :color) item-map)]
+       (into
+        {}
+        (map-indexed
+         (fn [i [id item]]
+           [id (assoc item :rank i)])
+         sorted))))))
+
 (defn grid-place
   [num-columns rank]
-  (let [v-offset (* 110 (int (/ rank num-columns)))
+  (let [v-offset (* 110 (quot rank num-columns))
         h-offset (* 110 (mod rank num-columns))]
     (str "translate3d("h-offset"%, "v-offset"%, 0)")))
 
 (defn list-item
-  [id item]
+  [num-columns id item]
   [:div.item 
    {:style 
     {:background-color (:color item)
      :z-index id
-     :transform (grid-place 25 (:rank item))}
+     :transform (grid-place num-columns (:rank item))}
     :id id}
-   id])
+   ])
+
+(defn controls
+  [state]
+  (let [num-columns (get-in @state [:page :num-columns])]
+    [:div 
+     [:button {:on-click #(shuffle-items! state)} "Shuffle"]
+     [:button {:on-click #(reverse-items! state)} "Reverse"]
+     [:button {:on-click #(color-sort! state)} "Sort by color"]
+     [:div "Number of columns: " num-columns]
+     [:input {:type "range"
+              :min 1
+              :max 30
+              :value num-columns
+              :on-change #(swap! 
+                           state 
+                           assoc-in [:page :num-columns] 
+                           (-> % .-target .-value js/parseInt))}]]))
 
 (defn page
   [state]
-  (swap! state assoc-in [:page :items] (generate-items 300))
+  (swap! 
+   state 
+   assoc :page 
+   {:items (generate-items 1000)
+    :num-columns 25})
   (fn
     [state]
-    [:div
-     [:button {:on-click #(shuffle-all! state)} 
-      "Shuffle"]
-     [:div.sortable-list
-      (for [[id item] (get-in @state [:page :items])]
-        ^{:key id} [list-item id item])]]))
+    (let [{:keys [num-columns items]} (:page @state)]
+      [:div
+       [controls state]
+       [:div.sortable-list
+        (for [[id item] items]
+          ^{:key id} [list-item num-columns id item])]])))
