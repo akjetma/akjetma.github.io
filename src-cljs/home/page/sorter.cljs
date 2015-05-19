@@ -89,20 +89,28 @@
 
 (defn controls
   [state]
-  (let [num-columns (get-in @state [:page :num-columns])]
-    [:div 
-     [:button {:on-click #(shuffle-items! state)} "Shuffle"]
-     [:button {:on-click #(reverse-items! state)} "Reverse"]
-     [:button {:on-click #(color-sort! state)} "Sort by color"]
-     [:div "Number of columns: " num-columns]
-     [:input {:type "range"
-              :min 1
-              :max 30
-              :value num-columns
-              :on-change #(swap! 
-                           state 
-                           assoc-in [:page :num-columns] 
-                           (-> % .-target .-value js/parseInt))}]]))
+  (let [num-columns (get-in @state [:page :num-columns])
+        num-items (count (get-in @state [:page :items]))]
+    [:div#sortable-controls
+     [:div.row
+      [:input {:type "number"
+               :value num-items
+               :on-change #(swap! state assoc-in [:page :items] (-> % .-target .-value js/parseInt generate-items))}]
+      [:span "# of items: " num-items]]
+     [:div.row 
+      [:input {:type "range"
+               :min 1
+               :max 30
+               :value num-columns
+               :on-change #(swap! 
+                            state 
+                            assoc-in [:page :num-columns] 
+                            (-> % .-target .-value js/parseInt))}]
+      "# of columns: " num-columns]
+     [:div.row
+      [:button {:on-click #(shuffle-items! state)} "Shuffle"]
+      [:button {:on-click #(reverse-items! state)} "Reverse"]
+      [:button {:on-click #(color-sort! state)} "Sort by color"]]]))
 
 (defn page
   [state]
@@ -116,6 +124,6 @@
     (let [{:keys [num-columns items]} (:page @state)]
       [:div
        [controls state]
-       [:div.sortable-list
+       [:div#sortable-list
         (for [[id item] items]
           ^{:key id} [list-item num-columns id item])]])))

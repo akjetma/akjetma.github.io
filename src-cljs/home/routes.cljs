@@ -21,4 +21,4 @@
     "*" 
     []
     (swap! state assoc 
-           :current-page tp/blank-page)))
+           :current-page home/page)))

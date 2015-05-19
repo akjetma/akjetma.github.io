@@ -2,4 +2,6 @@
 
 (defn page
   [state]
-  [:div "home"])
+  [:ul
+   [:li
+    [:a {:href "/#/sorter"} "element sorter thing"]]])

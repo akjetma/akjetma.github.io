@@ -3,7 +3,6 @@
             [secretary.core :as secretary]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [home.page.tests :as test-pages]
             [home.routes :as routes])
   (:import goog.History))
 
@@ -13,6 +12,10 @@
 
 (defonce app-state
   (reagent/atom {}))
+
+(defn blank-page
+  [state]
+  [:div])
 
 (defn inspector-toggle
   [state]
@@ -48,7 +51,7 @@
    {:show-inspector? false
     :initialized true
     :nav-count 0
-    :current-page test-pages/blank-page}))
+    :current-page blank-page}))
 
 (defn initialize-secretary!
   [state]
