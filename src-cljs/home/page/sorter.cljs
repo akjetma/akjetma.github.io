@@ -14,54 +14,39 @@
     generate-item 
     (range n))))
 
-(defn shuffle-items!
-  [state]
-  (swap! 
-   state 
-   update-in [:page :items] 
-   (fn 
-     [item-map]
-     (let [ranks (map :rank (vals item-map))
-           shuffled (shuffle ranks)]
-       (into
-        {} 
-        (map 
-         (fn 
-           [rank-new [id item]]
-           [id (assoc item :rank rank-new)])
-         shuffled
-         item-map))))))
+(defn shuffle-ranks
+  [item-map] 
+  (let [new-ranks (->> item-map (vals) (map :rank) (shuffle))]
+    (into 
+     {} 
+     (map 
+      (fn 
+        [[id item] new-rank]
+        [id (assoc item :rank new-rank)])
+      item-map
+      new-ranks))))
 
-(defn reverse-items!
-  [state]
-  (swap!
-   state
-   update-in [:page :items]
-   (fn 
-     [item-map]
-     (let [item-max (dec (count item-map))]
-       (into 
-        {}
-        (map 
-         (fn 
-           [[id item]]
-           [id (update item :rank #(- item-max %))])
-         item-map))))))
+(defn reverse-ranks
+  [item-map]
+  (let [item-max (-> item-map (count) (dec))]
+    (into 
+     {}
+     (map 
+      (fn 
+        [[id item]]
+        [id (update item :rank #(- item-max %))])
+      item-map))))
 
-(defn color-sort!
-  [state]
-  (swap!
-   state
-   update-in [:page :items]
-   (fn 
-     [item-map]
-     (let [sorted (sort-by #(-> % (get 1) :hue) item-map)]
-       (into
-        {}
-        (map-indexed
-         (fn [i [id item]]
-           [id (assoc item :rank i)])
-         sorted))))))
+(defn rank-by-hue
+  [item-map]
+  (let [hue-sorted (sort-by (fn [[_ item]] (:hue item)) item-map)]
+    (into
+     {}
+     (map-indexed
+      (fn 
+        [hue-index [id item]]
+        [id (assoc item :rank hue-index)])
+      hue-sorted))))
 
 (defn grid-place
   [num-columns rank]
@@ -70,10 +55,10 @@
     (str "translate3d("h-offset"%, "v-offset"%, 0)")))
 
 (defn list-item
-  [num-columns hue-shift id {:keys [hue rank]}]
+  [num-columns id {:keys [hue rank]}]
   [:div.item 
    {:style 
-    {:background-color (str "hsl(" (+ hue hue-shift) ", 100%, 50%)")
+    {:background-color (str "hsl(" hue ", 100%, 50%)")
      :z-index (- id)
      :transform (grid-place num-columns rank)}
     :id id}])
@@ -98,9 +83,9 @@
         :on-change #(swap! state assoc-in [:page :num-columns] (-> % .-target .-value js/parseInt))}]
       "# of columns: " num-columns]
      [:div.row
-      [:button {:on-click #(shuffle-items! state)} "Shuffle"]
-      [:button {:on-click #(reverse-items! state)} "Reverse"]
-      [:button {:on-click #(color-sort! state)} "Sort by color"]]]))
+      [:button {:on-click #(swap! state update-in [:page :items] shuffle-ranks)} "Shuffle"]
+      [:button {:on-click #(swap! state update-in [:page :items] reverse-ranks)} "Reverse"]
+      [:button {:on-click #(swap! state update-in [:page :items] rank-by-hue)} "Sort by color"]]]))
 
 (defn page
   [state]
@@ -108,14 +93,12 @@
    state 
    assoc :page 
    {:items (generate-items 100)
-    :num-columns 10
-    :hue-shift 0})
-  (.setInterval js/window #(swap! state update-in [:page :hue-shift] + 36) 5000)
+    :num-columns 10})
   (fn
     [state]
-    (let [{{:keys [num-columns items hue-shift]} :page} @state]
+    (let [{{:keys [num-columns items]} :page} @state]
       [:div
        [controls state]
        [:div#sortable-list
         (for [[id item] items]
-          ^{:key id} [list-item num-columns hue-shift id item])]])))
+          ^{:key id} [list-item num-columns id item])]])))

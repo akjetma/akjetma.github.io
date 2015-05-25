@@ -7,26 +7,21 @@
   :plugins [[lein-cljsbuild "1.0.6"]
             [lein-figwheel "0.3.1"]]
 
-  :clean-targets ^{:protect false} ["resources/public/js" "js" "target"]
+  :clean-targets ^{:protect false} ["resources/public/js" "target"]
 
-  :profiles {:dev 
-             {:cljsbuild {:builds [{:id "app"
-                                    :source-paths ["src-cljs"]
-                                    :figwheel true
-                                    :compiler {:main "home.core"
-                                               :asset-path "js/out"
-                                               :output-to "resources/public/js/app.js"
-                                               :output-dir "resources/public/js/out"
-                                               :source-map true
-                                               :pretty-print true}}]}
-              :figwheel {:css-dirs ["resources/public/css"]}}
+  :cljsbuild {:builds [{:id "dev"
+                        :source-paths ["src-cljs"]
+                        :figwheel true
+                        :compiler {:main "home.core"
+                                   :asset-path "js/out"
+                                   :output-to "resources/public/js/app.js"
+                                   :output-dir "resources/public/js/out"
+                                   :source-map-timestamp true}}
+                       {:id "min"
+                        :source-paths ["src-cljs"]
+                        :compiler {:main "home.core"
+                                   :output-to "resources/public/js/app.js"
+                                   :optimizations :advanced
+                                   :pretty-print false}}]}
 
-             :prod 
-             {:cljsbuild {:builds [{:id "app"
-                                    :source-paths ["src-cljs"]
-                                    :compiler {:main "home.core"
-                                               :asset-path "js/out"
-                                               :output-to "js/app.js"
-                                               :output-dir "js/out"
-                                               :pretty-print false
-                                               :optimizations :advanced}}]}}})
+   :figwheel {:css-dirs ["resources/public/css"]})

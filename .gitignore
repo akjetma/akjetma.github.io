@@ -10,5 +10,4 @@ pom.xml.asc
 .hgignore
 .hg/
 figwheel_server.log
-/js/out
-/resources/public/js/
+/resources/public/js/out
