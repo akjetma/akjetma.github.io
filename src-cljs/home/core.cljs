@@ -33,6 +33,7 @@
        [:div.code-container
         [:code.edn-map 
          (for [[k v] (dissoc @state :current-page)]
+           ^{:key k}
            [:div.pair
             [:span.key (str k)]
             [:span.val (str v)]])]])]))

@@ -14,13 +14,13 @@
                         :figwheel true
                         :compiler {:main "home.core"
                                    :asset-path "js/out"
-                                   :output-to "resources/public/js/app.js"
+                                   :output-to "resources/public/js/app.dev.js"
                                    :output-dir "resources/public/js/out"
                                    :source-map-timestamp true}}
                        {:id "min"
                         :source-paths ["src-cljs"]
                         :compiler {:main "home.core"
-                                   :output-to "resources/public/js/app.js"
+                                   :output-to "resources/public/js/app.min.js"
                                    :optimizations :advanced
                                    :pretty-print false}}]}
 
