@@ -54,19 +54,10 @@
         h-offset (* 110 (mod rank num-columns))]
     (str "translate3d("h-offset"%, "v-offset"%, 0)")))
 
-(defn list-item
-  [num-columns id {:keys [hue rank]}]
-  [:div.item 
-   {:style 
-    {:background-color (str "hsl(" hue ", 100%, 50%)")
-     :z-index (- id)
-     :transform (grid-place num-columns rank)}
-    :id id}])
-
 (defn controls
   [state]
-  (let [num-columns (get-in @state [:page :num-columns])
-        num-items (count (get-in @state [:page :items]))]
+  (let [{{:keys [num-columns items]} :page} @state
+        num-items (count items)]
     [:div#sortable-controls
      [:div.row
       [:input 
@@ -87,6 +78,24 @@
       [:button {:on-click #(swap! state update-in [:page :items] reverse-ranks)} "Reverse"]
       [:button {:on-click #(swap! state update-in [:page :items] rank-by-hue)} "Sort by color"]]]))
 
+(defn list-item
+  [num-columns id {:keys [hue rank]}]
+  (let [translation (grid-place num-columns rank)]
+    [:div.item 
+     {:style 
+      {:background-color (str "hsl(" hue ", 100%, 50%)")
+       :z-index (- id)
+       :transform translation
+       :-webkit-transform translation}
+      :id id}]))
+
+(defn item-list
+  [state]
+  (let [{{:keys [num-columns items]} :page} @state]
+    [:div#sortable-list
+     (for [[id {hue :hue :as item}] items]
+       ^{:key [id hue]} [list-item num-columns id item])]))
+
 (defn page
   [state]
   (swap! 
@@ -96,9 +105,6 @@
     :num-columns 10})
   (fn
     [state]
-    (let [{{:keys [num-columns items]} :page} @state]
-      [:div
-       [controls state]
-       [:div#sortable-list
-        (for [[id item] items]
-          ^{:key id} [list-item num-columns id item])]])))
+    [:div
+     [controls state]
+     [item-list state]]))
