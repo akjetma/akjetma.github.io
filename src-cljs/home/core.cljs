@@ -27,7 +27,7 @@
   [state]
   (let [shown? (:show-inspector? @state)]
     [:div#state-inspector
-     {:style {:height (if shown? "90px" "0px")}}
+     {:style {:height (if shown? "100px" "0px")}}
      [inspector-toggle state]
      (when shown?
        [:div.code-container
