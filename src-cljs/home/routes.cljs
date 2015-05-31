@@ -2,7 +2,8 @@
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [home.page.home :as home]
             [home.page.sorter :as sorter]
-            [home.page.matrix :as matrix]))
+            [home.page.matrix :as matrix]
+            [home.page.cube :as cube]))
 
 (defn define-routes!
   [state]
@@ -23,6 +24,12 @@
     []
     (swap! state assoc
            :current-page matrix/page))
+
+  (defroute cube-path
+    "/cube"
+    []
+    (swap! state assoc
+           :current-page cube/page))
  
   (defroute etc-path 
     "*" 

@@ -6,4 +6,6 @@
    [:li
     [:a {:href "/#/sorter"} "element sorter thing"]]
    [:li
-    [:a {:href "/#/matrix"} "matrix thing"]]])
+    [:a {:href "/#/matrix"} "matrix thing"]]
+   [:li
+    [:a {:href "/#/cube"} "cube thing"]]])
