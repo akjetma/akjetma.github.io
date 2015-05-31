@@ -54,6 +54,15 @@
     :nav-count 0
     :current-page blank-page}))
 
+(defn update-multi
+  [m & kfs]
+  (reduce
+   (fn 
+     [result [k f]]
+     (update result k f))
+   m
+   (partition 2 kfs)))
+
 (defn initialize-secretary!
   [state]
   (let [h (History.)]
@@ -62,8 +71,9 @@
      (fn [e]
        (swap! 
         state 
-        update 
-        :nav-count inc)
+        update-multi
+        :nav-count inc
+        :page (constantly {}))
        (secretary/dispatch! (.-token e))))
     (doto h (.setEnabled true))))
 
