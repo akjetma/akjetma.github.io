@@ -1,5 +1,4 @@
-(ns home.page.matrix
-  (:require [reagent.core :as r]))
+(ns home.page.matrix)
 
 (defn index-controller
   [state i j]
