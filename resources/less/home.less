@@ -108,64 +108,58 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
 // home.page.cube ----------------------------------------------------------------------------------
 
 #cube-page {
-    padding: 100px;
-}
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    transform-style: preserve-3d;
+    transform: rotate3d(1, 1, 0, 135deg);
+    transition: transform 1s linear;
 
-.cube-container {
-    @size: 250px;
-
-    position: relative;
-    width: @size;
-    height: @size;
-    perspective: @size * 5;
-    -webkit-perspective: @size * 5;
-
-    > .cube {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        transform-style: preserve-3d;
-        -webkit-transform-style: preserve-3d;
-        transition: transform 0.5s ease-in-out;
-        
-        &.front-active  { transform: translateZ(@size / 2) rotateY(0deg);    }
-        &.back-active   { transform: translateZ(@size / 2) rotateX(-180deg); }
-        &.right-active  { transform: translateZ(@size / 2) rotateY(-90deg);  }
-        &.left-active   { transform: translateZ(@size / 2) rotateY(90deg);   }
-        &.top-active    { transform: translateZ(@size / 2) rotateX(-90deg);  }
-        &.bottom-active { transform: translateZ(@size / 2) rotateX(90deg);   }
-
-        
-        > .face {
-            width: @size;
-            height: @size;
-            display: block;
-            position: absolute;
-            
-            &.front  { 
-                transform: rotateY(  0deg) translateZ(@size / 2);
-                background-color: hsla(0, 100%, 50%, 1.0);
-            }
-            &.back   { 
-                transform: rotateX(180deg) translateZ(@size / 2); 
-                background-color: hsla(40, 100%, 50%, 1.0);
-            }
-            &.right  { 
-                transform: rotateY( 90deg) translateZ(@size / 2); 
-                background-color: hsla(80, 100%, 50%, 1.0);
-            }
-            &.left   { 
-                transform: rotateY(-90deg) translateZ(@size / 2); 
-                background-color: hsla(120, 100%, 50%, 1.0);
-            }
-            &.top    { 
-                transform: rotateX( 90deg) translateZ(@size / 2); 
-                background-color: hsla(160, 100%, 50%, 1.0);
-            }
-            &.bottom { 
-                transform: rotateX(-90deg) translateZ(@size / 2); 
-                background-color: hsla(200, 100%, 50%, 1.0);
-            }
-        }
+    > .window {
+        margin: auto;
+        width: 50px;
+        height: 50px;
     }
 }
+
+#cube-page .cube {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateY(90deg) translateX(20%) rotateY(-90deg);
+}
+
+#cube-page .cube > .face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fff;
+    margin: -1px;
+    transform-style: preserve-3d;
+    background-color: #000;
+
+    &.front {
+        transform: rotateY(90deg) translateX(100%) rotateY(-90deg);
+    }
+
+    &.top {
+        transform: translateY(-50%) rotateX(-90deg) translateY(50%);
+    }
+
+    &.right {
+        transform: translateX(50%) rotateY(-90deg) translateX(-50%);
+    }
+
+    &.left {
+        transform: translateX(-50%) rotateY(90deg) translateX(50%);
+    }
+
+    &.bottom {
+        transform: translateY(50%) rotateX(90deg) translateY(-50%);
+    }
+
+    &.back {
+        transform: rotateY(180deg);
+    }
+}
+

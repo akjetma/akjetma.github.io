@@ -1,31 +1,24 @@
 (ns home.page.cube)
 
-(defn get-active-face
-  [ind]
-  (str 
-   (last 
-    (take 
-     (inc ind) 
-     (cycle ["front" "back" "right" "left" "top" "bottom"])))
-   "-active"))
-
 (defn cube
-  [state]
-  (let [face-index (get-in @state [:page :face-index])]
-    [:div.cube-container
-     [:div {:class (str "cube " (get-active-face face-index))
-            :on-click #(swap! state update-in [:page :face-index] inc)}
-      [:div.face.front]
-      [:div.face.back]
-      [:div.face.right]
-      [:div.face.left]
-      [:div.face.top]
-      [:div.face.bottom]]]))
+  ([] (cube {}))
+  ([{:keys [front top right left bottom back]}]
+   [:div.cube
+    [:div.face.front front]
+    [:div.face.top top]
+    [:div.face.right right]
+    [:div.face.left left]
+    [:div.face.bottom bottom]
+    [:div.face.back back]]))
 
 (defn page
   [state]
-  (swap! state assoc-in [:page :face-index] 0)
-  (fn 
-    [state] 
-    [:div#cube-page
-     [cube state]]))
+  [:div#cube-page
+   [:div.window
+    [cube 
+     {:front [cube {:front [cube {:front [cube]}]}] 
+      :top [cube {:front [cube {:front [cube]}]}] 
+      :right [cube {:front [cube {:front [cube]}]}] 
+      :left [cube {:front [cube {:front [cube]}]}] 
+      :bottom [cube {:front [cube {:front [cube]}]}] 
+      :back [cube {:front [cube {:front [cube]}]}]}]]])
