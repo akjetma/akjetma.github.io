@@ -112,13 +112,13 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
     width: 100vw;
     height: 100vh;
     transform-style: preserve-3d;
-    transform: rotate3d(1, 1, 0, 135deg);
     transition: transform 1s linear;
+    transform: rotateX(-45deg) rotateY(-45deg);
 
     > .window {
         margin: auto;
-        width: 50px;
-        height: 50px;
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -126,40 +126,50 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transform: rotateY(90deg) translateX(20%) rotateY(-90deg);
+    transition: transform 1s linear;
 }
 
 #cube-page .cube > .face {
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 1px solid #fff;
-    margin: -1px;
     transform-style: preserve-3d;
     background-color: #000;
 
     &.front {
-        transform: rotateY(90deg) translateX(100%) rotateY(-90deg);
+        transform: rotateY(90deg) translateX(-100%) rotateY(-90deg);
+        background-color: red;
+        > .cube { transform: rotateY(-90deg) translateX(20%) rotateY(90deg); }
     }
 
     &.top {
-        transform: translateY(-50%) rotateX(-90deg) translateY(50%);
+        transform: translateY(-50%) rotateX(90deg) translateY(50%);
+        background-color: orange;
+        > .cube { transform: translateY(-50%) rotateX(-90deg) translateY(-70%); }
     }
 
     &.right {
-        transform: translateX(50%) rotateY(-90deg) translateX(-50%);
+        transform: translateX(50%) rotateY(90deg) translateX(-50%);
+        background-color: yellow;
+        > .cube { transform: translateX(50%) rotateY(-90deg) translateX(70%); }
     }
 
     &.left {
-        transform: translateX(-50%) rotateY(90deg) translateX(50%);
+        transform: translateX(-50%) rotateY(-90deg) translateX(50%);
+        background-color: green; 
+        > .cube { transform: translateX(-50%) rotateY(90deg) translateX(-70%); }
     }
 
     &.bottom {
-        transform: translateY(50%) rotateX(90deg) translateY(-50%);
+        transform: translateY(50%) rotateX(-90deg) translateY(-50%);
+        background-color: blue;
+        > .cube { transform: translateY(50%) rotateX(90deg) translateY(70%); }
     }
 
     &.back {
         transform: rotateY(180deg);
+        background-color: violet;
+        > .cube { transform: rotateY(-90deg) translateX(120%) rotateY(-90deg); }
     }
 }
 

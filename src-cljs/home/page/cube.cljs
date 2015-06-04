@@ -17,8 +17,9 @@
    [:div.window
     [cube 
      {:front [cube {:front [cube {:front [cube]}]}] 
-      :top [cube {:front [cube {:front [cube]}]}] 
-      :right [cube {:front [cube {:front [cube]}]}] 
-      :left [cube {:front [cube {:front [cube]}]}] 
-      :bottom [cube {:front [cube {:front [cube]}]}] 
-      :back [cube {:front [cube {:front [cube]}]}]}]]])
+      :top [cube {:top [cube {:top [cube]}]}] 
+      :right [cube {:right [cube {:right [cube]}]}] 
+      :left [cube {:left [cube {:left [cube]}]}] 
+      :bottom [cube {:bottom [cube {:bottom [cube]}]}] 
+      :back [cube {:back [cube {:back [cube]}]}]}]
+    ]])
