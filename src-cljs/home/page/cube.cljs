@@ -1,25 +1,56 @@
-(ns home.page.cube)
+(ns home.page.cube
+  (:require [reagent.core :as r]))
+
+(declare cube)
+
+(defn face
+  [state side]
+  [:div.face {:class side
+              :on-click #(swap! state assoc side [cube])}
+   (get @state side)])
 
 (defn cube
-  ([] (cube {}))
-  ([{:keys [front top right left bottom back]}]
-   [:div.cube
-    [:div.face.front front]
-    [:div.face.top top]
-    [:div.face.right right]
-    [:div.face.left left]
-    [:div.face.bottom bottom]
-    [:div.face.back back]]))
+  []
+  (let [cube-state (r/atom {})]
+    (fn []
+      [:div.cube
+       (map 
+        (fn [side]
+          [face cube-state side])
+        ["front" "top" "right" "left" "bottom" "back"])])))
+
+(defn camera-controls
+  [state]
+  [:div.camera-controls
+   [:p "click on a face to add a cube"]
+   [:input {:type "range"
+            :min -360
+            :max 360
+            :value (-> @state :page :camera-x)
+            :on-change #(swap! state assoc-in [:page :camera-x] (-> % .-target .-value))}]
+   [:input {:type "range"
+            :min -360
+            :max 360
+            :value (-> @state :page :camera-y)
+            :on-change #(swap! state assoc-in [:page :camera-y] (-> % .-target .-value))}]
+   [:input {:type "range"
+            :min -360
+            :max 360
+            :value (-> @state :page :camera-z)
+            :on-change #(swap! state assoc-in [:page :camera-z] (-> % .-target .-value))}]])
 
 (defn page
   [state]
-  [:div#cube-page
-   [:div.window
-    [cube 
-     {:front [cube {:front [cube {:front [cube]}]}] 
-      :top [cube {:top [cube {:top [cube]}]}] 
-      :right [cube {:right [cube {:right [cube]}]}] 
-      :left [cube {:left [cube {:left [cube]}]}] 
-      :bottom [cube {:bottom [cube {:bottom [cube]}]}] 
-      :back [cube {:back [cube {:back [cube]}]}]}]
-    ]])
+  (swap! state assoc :page {:camera-x -45
+                            :camera-y -45
+                            :camera-z 0})
+  (fn [state]
+    (let [{{:keys [camera-x camera-y camera-z]} :page} @state
+          transform (str "rotateX(" camera-x "deg) "
+                         "rotateY(" camera-y "deg) " 
+                         "rotateZ(" camera-z "deg)")]
+      [:div#cube-page
+       [camera-controls state]
+       [:div#cube-container {:style {:transform transform}}
+        [:div.window
+         [cube]]]])))
