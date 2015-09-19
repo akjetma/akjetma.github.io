@@ -11,7 +11,7 @@
 
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src-cljs"]
-                        :figwheel true
+                        :figwheel {:on-jsload "home.core/fw-reload"}
                         :compiler {:main "home.core"
                                    :asset-path "js/out"
                                    :output-to "resources/public/js/app.dev.js"

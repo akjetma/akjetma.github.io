@@ -57,25 +57,21 @@
 (defn update-multi
   [m & kfs]
   (reduce
-   (fn 
-     [result [k f]]
-     (update result k f))
+   (fn [result [k f]] (update result k f))
    m
    (partition 2 kfs)))
 
+(defn navigate
+  [state token]
+  (swap! state update-multi :nav-count inc :page (constantly {}))
+  (secretary/dispatch! token))
+
 (defn initialize-secretary!
-  [state]
-  (let [h (History.)]
-    (goog.events/listen
-     h EventType/NAVIGATE 
-     (fn [e]
-       (swap! 
-        state 
-        update-multi
-        :nav-count inc
-        :page (constantly {}))
-       (secretary/dispatch! (.-token e))))
-    (doto h (.setEnabled true))))
+  [state history]
+  (goog.events/listen
+   history EventType/NAVIGATE 
+   #(navigate state (.-token %)))
+  (doto history (.setEnabled true)))
 
 (defn initialize-reagent!
   [state]
@@ -85,10 +81,12 @@
 
 (defn setup!
   [state]
-  (initialize-state! state)
-  (routes/define-routes! state)
-  (initialize-secretary! state)
-  (initialize-reagent! state))
+  (let [history (History.)]
+    (initialize-state! state)
+    (routes/define-routes! state)
+    (initialize-secretary! state history)
+    (initialize-reagent! state)
+    (defn fw-reload [] (navigate state (.getToken history)))))
 
 (when-not (:initialized @app-state)
   (setup! app-state))
