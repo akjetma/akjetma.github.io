@@ -26,26 +26,29 @@
    [:input {:type "range"
             :min -360
             :max 360
-            :value (-> @state :page :camera-x)
-            :on-change #(swap! state assoc-in [:page :camera-x] (-> % .-target .-value))}]
+            :value (-> @state :cube :camera-x)
+            :on-change #(swap! state assoc-in [:cube :camera-x] (-> % .-target .-value))}]
    [:input {:type "range"
             :min -360
             :max 360
-            :value (-> @state :page :camera-y)
-            :on-change #(swap! state assoc-in [:page :camera-y] (-> % .-target .-value))}]
+            :value (-> @state :cube :camera-y)
+            :on-change #(swap! state assoc-in [:cube :camera-y] (-> % .-target .-value))}]
    [:input {:type "range"
             :min -360
             :max 360
-            :value (-> @state :page :camera-z)
-            :on-change #(swap! state assoc-in [:page :camera-z] (-> % .-target .-value))}]])
+            :value (-> @state :cube :camera-z)
+            :on-change #(swap! state assoc-in [:cube :camera-z] (-> % .-target .-value))}]])
 
 (defn page
   [state]
-  (swap! state assoc :page {:camera-x -45
-                            :camera-y -45
-                            :camera-z 0})
-  (fn [state]
-    (let [{{:keys [camera-x camera-y camera-z]} :page} @state
+  (when-not (:cube @state)
+    (swap! state assoc :cube
+           {:camera-x -45
+            :camera-y -45
+            :camera-z 0}))
+  (fn cube-page
+    [state]
+    (let [{{:keys [camera-x camera-y camera-z]} :cube} @state
           transform (str "rotateX(" camera-x "deg) "
                          "rotateY(" camera-y "deg) " 
                          "rotateZ(" camera-z "deg)")]

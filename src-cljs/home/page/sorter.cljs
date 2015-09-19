@@ -56,14 +56,14 @@
 
 (defn controls
   [state]
-  (let [{{:keys [num-columns items]} :page} @state
+  (let [{{:keys [num-columns items]} :sorter} @state
         num-items (count items)]
     [:div#sortable-controls
      [:div.row
       [:input 
        {:type "number"
         :value num-items
-        :on-change #(swap! state assoc-in [:page :items] (-> % .-target .-value js/parseInt generate-items))}]
+        :on-change #(swap! state assoc-in [:sorter :items] (-> % .-target .-value js/parseInt generate-items))}]
       [:span "# of items: " num-items]]
      [:div.row 
       [:input 
@@ -71,12 +71,12 @@
         :min 1
         :max 30
         :value num-columns
-        :on-change #(swap! state assoc-in [:page :num-columns] (-> % .-target .-value js/parseInt))}]
+        :on-change #(swap! state assoc-in [:sorter :num-columns] (-> % .-target .-value js/parseInt))}]
       "# of columns: " num-columns]
      [:div.row
-      [:button {:on-click #(swap! state update-in [:page :items] shuffle-ranks)} "Shuffle"]
-      [:button {:on-click #(swap! state update-in [:page :items] reverse-ranks)} "Reverse"]
-      [:button {:on-click #(swap! state update-in [:page :items] rank-by-hue)} "Sort by color"]]]))
+      [:button {:on-click #(swap! state update-in [:sorter :items] shuffle-ranks)} "Shuffle"]
+      [:button {:on-click #(swap! state update-in [:sorter :items] reverse-ranks)} "Reverse"]
+      [:button {:on-click #(swap! state update-in [:sorter :items] rank-by-hue)} "Sort by color"]]]))
 
 (defn list-item
   [num-columns id {:keys [hue rank]}]
@@ -91,19 +91,18 @@
 
 (defn item-list
   [state]
-  (let [{{:keys [num-columns items]} :page} @state]
+  (let [{{:keys [num-columns items]} :sorter} @state]
     [:div#sortable-list
      (for [[id {hue :hue :as item}] items]
        ^{:key [id hue]} [list-item num-columns id item])]))
 
 (defn page
   [state]
-  (swap! 
-   state 
-   assoc :page 
-   {:items (generate-items 100)
-    :num-columns 10})
-  (fn
+  (when-not (:sorter @state)
+    (swap! state assoc :sorter 
+           {:items (generate-items 100)
+            :num-columns 10}))
+  (fn sorter-page
     [state]
     [:div
      [controls state]

@@ -7,8 +7,8 @@
     :min -2
     :max 2
     :step 0.001
-    :value (get-in @state [:page :matrix i j])
-    :on-change #(swap! state assoc-in [:page :matrix i j] 
+    :value (get-in @state [:matrix i j])
+    :on-change #(swap! state assoc-in [:matrix i j] 
                        (-> % .-target .-value js/parseFloat))}])
 
 (defn control-mat
@@ -30,18 +30,18 @@
 
 (defn display-mat
   [state]
-  (let [{{[[a b tx] [c d ty]] :matrix} :page} @state
+  (let [{[[a b tx] [c d ty]] :matrix} @state
         renderable (partial vector render-mat a b tx c d ty)]
     [:div.mat-container
      (reduce (fn [nest render-fn] (render-fn nest)) (renderable) (repeat 25 renderable))]))
 
 (defn page
   [state]
-  (swap! state 
-         assoc-in [:page :matrix]
-         [[1 0 0]
-          [0 1 0]])
-  (fn 
+  (when-not (:matrix @state)
+    (swap! state assoc :matrix
+           [[1 0 0]
+            [0 1 0]]))
+  (fn matrix-page
     [state]
     [:div#matrix-page
      [:p.help "Use arrow keys for fine adjustments"]
