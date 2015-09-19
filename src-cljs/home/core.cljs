@@ -6,10 +6,6 @@
             [home.routes :as routes])
   (:import goog.History))
 
-(enable-console-print!)
-
-(secretary/set-config! :prefix "#")
-
 (defn blank-page
   [state]
   [:div])
@@ -76,15 +72,15 @@
    [app state]
    (.getElementById js/document "app")))
 
-(defn setup!
-  [state history]
-  (initialize-state! state)
-  (routes/define-routes! state)
-  (initialize-secretary! state history)
-  (initialize-reagent! state))
-
 (defonce load
   (let [state (reagent/atom {})
         history (History.)]
-    (setup! state history)
-    #(navigate state (.getToken history))))
+    (enable-console-print!)
+    (secretary/set-config! :prefix "#")
+    (initialize-state! state)
+    (routes/define-routes! state)
+    (initialize-secretary! state history)
+    (initialize-reagent! state)
+    (fn figwheel-reload-fn
+      []
+      (navigate state (.getToken history)))))
