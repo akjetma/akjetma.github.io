@@ -10,9 +10,6 @@
 
 (secretary/set-config! :prefix "#")
 
-(defonce app-state
-  (reagent/atom {}))
-
 (defn blank-page
   [state]
   [:div])
@@ -45,15 +42,6 @@
    [:div#page
     [(:current-page @state) state]]])
 
-(defn initialize-state!
-  [state]
-  (reset! 
-   state 
-   {:show-inspector? false
-    :initialized true
-    :nav-count 0
-    :current-page blank-page}))
-
 (defn update-multi
   [m & kfs]
   (reduce
@@ -63,8 +51,17 @@
 
 (defn navigate
   [state token]
-  (swap! state update-multi :nav-count inc :page (constantly {}))
+  (swap! state update :nav-count inc)
   (secretary/dispatch! token))
+
+(defn initialize-state!
+  [state]
+  (reset! 
+   state 
+   {:show-inspector? false
+    :initialized true
+    :nav-count 0
+    :current-page blank-page}))
 
 (defn initialize-secretary!
   [state history]
@@ -80,13 +77,14 @@
    (.getElementById js/document "app")))
 
 (defn setup!
-  [state]
-  (let [history (History.)]
-    (initialize-state! state)
-    (routes/define-routes! state)
-    (initialize-secretary! state history)
-    (initialize-reagent! state)
-    (defn fw-reload [] (navigate state (.getToken history)))))
+  [state history]
+  (initialize-state! state)
+  (routes/define-routes! state)
+  (initialize-secretary! state history)
+  (initialize-reagent! state))
 
-(when-not (:initialized @app-state)
-  (setup! app-state))
+(defonce load
+  (let [state (reagent/atom {})
+        history (History.)]
+    (setup! state history)
+    #(navigate state (.getToken history))))
