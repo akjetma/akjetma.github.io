@@ -1,5 +1,10 @@
 (ns home.page.sorter)
 
+(def emoji
+  {:shuffle "🔀"
+   :reverse "🔁"
+   :rainbow "🌈"})
+
 (defn generate-item
   [rank-init]
   [rank-init 
@@ -63,20 +68,18 @@
       [:input 
        {:type "number"
         :value num-items
-        :on-change #(swap! state assoc-in [:sorter :items] (-> % .-target .-value js/parseInt generate-items))}]
-      [:span "# of items: " num-items]]
+        :on-change #(swap! state assoc-in [:sorter :items] (-> % .-target .-value js/parseInt generate-items))}]]
      [:div.row 
-      [:input 
+      [:input.btn 
        {:type "range"
         :min 1
         :max 30
         :value num-columns
-        :on-change #(swap! state assoc-in [:sorter :num-columns] (-> % .-target .-value js/parseInt))}]
-      "# of columns: " num-columns]
+        :on-change #(swap! state assoc-in [:sorter :num-columns] (-> % .-target .-value js/parseInt))}]]
      [:div.row
-      [:button {:on-click #(swap! state update-in [:sorter :items] shuffle-ranks)} "Shuffle"]
-      [:button {:on-click #(swap! state update-in [:sorter :items] reverse-ranks)} "Reverse"]
-      [:button {:on-click #(swap! state update-in [:sorter :items] rank-by-hue)} "Sort by color"]]]))
+      [:span.btn {:on-click #(swap! state update-in [:sorter :items] shuffle-ranks)} (:shuffle emoji)]
+      [:span.btn {:on-click #(swap! state update-in [:sorter :items] reverse-ranks)} (:reverse emoji)]
+      [:span.btn {:on-click #(swap! state update-in [:sorter :items] rank-by-hue)} (:rainbow emoji)]]]))
 
 (defn list-item
   [num-columns id {:keys [hue rank]}]
@@ -104,6 +107,6 @@
             :num-columns 10}))
   (fn sorter-page
     [state]
-    [:div
+    [:div#sorter-page
      [controls state]
      [item-list state]]))

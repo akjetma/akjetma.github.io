@@ -22,7 +22,6 @@
 (defn camera-controls
   [state]
   [:div.camera-controls
-   [:p "click on a face to add a cube"]
    [:input {:type "range"
             :min -360
             :max 360

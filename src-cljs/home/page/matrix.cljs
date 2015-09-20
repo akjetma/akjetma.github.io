@@ -44,6 +44,5 @@
   (fn matrix-page
     [state]
     [:div#matrix-page
-     [:p.help "Use arrow keys for fine adjustments"]
      [control-mat state]
      [display-mat state]]))

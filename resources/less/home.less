@@ -1,20 +1,116 @@
-body { margin: 0; font-family: "Helvetica Neue"; }
+@glacier: #000;
 
-#page { margin: 5px; }
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
 
+body {
+    font-family: "Helvetica Neue";
+    color: @glacier;
+}
 
+a {
+    color: @glacier;
+}
+
+.btn {
+    cursor: pointer;
+}
+
+// -------------------------------------------------------------------------------------------------
+
+#bar {
+    width: 20%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-right: 3px solid @glacier;    
+    background-color: #fff;
+    z-index: 2;
+    
+    a { text-decoration: none; }
+    h2 { font-size: 30px; }
+    h4 { font-size: 20px; }
+
+    > .contents {
+        padding: 40px;
+    }
+
+    .bar-item {
+        margin-bottom: 20px;
+    }
+    
+    .thing-list > .list {
+        padding-top: 5px;
+        > .thing {
+            border-bottom: 1px solid lighten(@glacier, 90%);
+            font-weight: 200;
+            letter-spacing: 1px;
+        }
+    }
+}
+
+#page {
+    width: 75%;
+    position: absolute;
+    top: 0;
+    left: 25%;
+    padding-top: 5%;
+}
 
 // inspector ---------------------------------------------------------------------------------------
 
 #state-inspector {
     position: fixed;
-    z-index: 2;
+    z-index: 3;
     bottom: 0px;
     left: 0px;
     width: 100%;
     transition: height 0.2s ease-out;
     background-color: #222;
-
+    
     > .code-container {
         color: #ddd;
         overflow: scroll;
@@ -29,12 +125,15 @@ body { margin: 0; font-family: "Helvetica Neue"; }
     position: absolute;
     top: -30px;
     right: 7px;
-    border-left: 3px solid #f00;
-    border-right: 3px solid #f00;
+    border: 3px solid #f00;
     cursor: pointer;
 }
 
 code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
+
+
+
+// home.page.home ----------------------------------------------------------------------------------
 
 
 
@@ -55,7 +154,17 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
     }
 }
 
-#sortable-controls > .row { margin-top: 10px; }
+#sortable-controls {
+    display: flex;
+    justify-content: space-between;
+    max-width: 550px;
+}
+
+#sortable-controls > .row {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
+}
 
 
 
@@ -64,17 +173,11 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
 #matrix-page {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-
-    > .help {
-        margin: auto;
-    }
-
+    
     > .mat-container {
+        margin-top: 60px;
         width: 600px;
         height: 600px;
-        margin: auto;
 
         .mat {
             display: flex;
@@ -87,7 +190,7 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
     }
 
     > .mat-controls {
-        margin: auto;
+        // margin: auto;
         width: 800px;
         z-index: 1;
  
@@ -108,7 +211,12 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
 // home.page.cube ----------------------------------------------------------------------------------
 
 #cube-page {
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 600px;
+    
     > .camera-controls { 
         position:absolute;
         z-index: 1;
@@ -116,8 +224,7 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
 
     #cube-container {
         display: flex;
-        width: 100vw;
-        height: 100vh;
+        // height: 100vh;
         transform-style: preserve-3d;
         transition: transform 1s linear;
         transform: rotateX(-45deg) rotateY(-45deg);
@@ -184,6 +291,10 @@ code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
     }
 
 }
+
+
+
+// home.page.signal --------------------------------------------------------------------------------
 
 #signal-page {
     .scene {

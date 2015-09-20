@@ -3,47 +3,9 @@
             [secretary.core :as secretary]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [home.routes :as routes])
+            [home.routes :as routes]
+            [home.component :as component])
   (:import goog.History))
-
-(defn blank-page
-  [state]
-  [:div])
-
-(defn inspector-toggle
-  [state]
-  [:div#inspector-toggle
-   {:on-click #(swap! state update :show-inspector? not)}
-   "\u2603"])
-
-(defn state-inspector
-  [state]
-  (let [shown? (:show-inspector? @state)]
-    [:div#state-inspector
-     {:style {:height (if shown? "100px" "0px")}}
-     [inspector-toggle state]
-     (when shown?
-       [:div.code-container
-        [:code.edn-map 
-         (for [[k v] (dissoc @state :current-page)]
-           ^{:key k}
-           [:div.pair
-            [:span.key (str k)]
-            [:span.val (str v)]])]])]))
-
-(defn app
-  [state]
-  [:div
-   [state-inspector state]
-   [:div#page
-    [(:current-page @state) state]]])
-
-(defn update-multi
-  [m & kfs]
-  (reduce
-   (fn [result [k f]] (update result k f))
-   m
-   (partition 2 kfs)))
 
 (defn navigate
   [state token]
@@ -57,7 +19,7 @@
    {:show-inspector? false
     :initialized true
     :nav-count 0
-    :current-page blank-page}))
+    :current-page (constantly [:div])}))
 
 (defn initialize-secretary!
   [state history]
@@ -69,7 +31,7 @@
 (defn initialize-reagent!
   [state]
   (reagent/render-component
-   [app state]
+   [component/app state]
    (.getElementById js/document "app")))
 
 (defonce load
