@@ -1,11 +1,12 @@
 (ns home.page.home)
 
+(defn place
+  [loc]
+  [:li
+   [:a {:href (str "/#/" loc)}
+    (str loc " thing")]])
+
 (defn page
   [state]
   [:ul
-   [:li
-    [:a {:href "/#/sorter"} "element sorter thing"]]
-   [:li
-    [:a {:href "/#/matrix"} "matrix thing"]]
-   [:li
-    [:a {:href "/#/cube"} "cube thing"]]])
+   (map place ["sorter" "matrix" "cube" "signal"])])
