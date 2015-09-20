@@ -1,4 +1,6 @@
-(ns home.page.signal)
+(ns home.page.signal
+  (:require-macros [reagent.ratom :refer [reaction]])
+  (:require [reagent.core :as reagent]))
 
 (def oo "•")
 (def xx "°")
@@ -11,32 +13,50 @@
 (def ll "←")
 (def lu "↖")
 
+(def directions
+  {[-1 -1] lu
+   [-1  0] uu
+   [-1  1] ur
+   [0  -1] ll
+   [0   0] oo
+   [0   1] rr
+   [1  -1] dl
+   [1   0] dd
+   [1   1] rd})
+
 (def opposite
-  {oo xx
-   xx oo
-   uu dd
+  {uu dd
    ur dl
    rr ll
    rd lu
    dd uu
    dl ur
    ll rr
-   lu rd})
+   lu rd
+   oo xx
+   xx oo})
 
-(defn mapm
-  ([cell mat] (mapm cell identity mat))
-  ([cell row mat]
-   (mapv
-    (comp
-     row
-     (partial mapv cell))
-    mat)))
+(defn idx-coll
+  [coll]
+  (partition 2 (interleave (range) coll)))
 
-(defn p-intersect?
-  [m-a m-b]
-  (some
-   true?
-   (map = (flatten m-a) (flatten m-b))))
+(defn mat-map
+  "map a function over the elements of a matrix. function is called with [i j] of current elem"
+  [f m]
+  (let [rows (count m)
+        cols (count (first m))]
+    (mapv
+     (fn [i]
+       (mapv
+        (fn [j]
+          (f (get-in m [i j]) [i j]))
+        (range cols)))
+     (range rows))))
+
+(def catmap
+  (comp
+   (partial into {})
+   mapcat))
 
 (def in
   [[rd dd dl]
@@ -44,42 +64,34 @@
    [ur uu lu]])
 
 (def out
-  (mapm
-   (partial get opposite)
+  (mat-map
+   #(get opposite %1)
    in))
 
-(def initial-matrix
-  [[rd xx xx xx xx]
-   [xx xx xx xx xx]
-   [xx xx xx xx xx]])
 
-(defn indexed-matrix
-  [mat]
-  (into
-   {}
-   (mapcat
-    (fn [row i]
-      (map
-       (fn [cell j]
-         [[i j] cell])
-       row
-       (range)))
-    mat
-    (range))))
+
+(defn neighbors
+  [i j m]
+  (let [rows (count m)
+        cols (count (first m))]
+    (catmap
+     (fn [ii]
+       (map
+        (fn [jj]
+          [[ii jj]
+           (get-in m [(mod (+ i ii) rows) (mod (+ j jj) cols)])])
+        (range -1 2)))
+     (range -1 2))))
 
 (defn scene
   [mat]
   [:div.scene
-   (map-indexed
-    (fn [i row]
-      [:div.row
-       (map-indexed
-        (fn [j cell]
-          [:span.cell cell])
-        row)])
-    mat)])
+   (for [[i row] (idx-coll mat)]
+     [:div.row
+      (for [[j cell] (idx-coll row)]
+        [:span.cell cell])])])
 
 (defn page
   [state]
   [:div#signal-page
-   [scene initial-matrix]])
+   [scene in]])
