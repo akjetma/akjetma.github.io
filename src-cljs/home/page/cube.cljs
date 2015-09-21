@@ -7,7 +7,7 @@
   [state side]
   [:div.face {:class side
               :on-click #(swap! state assoc side [cube])}
-   (get @state side)])
+   (get @state side [:i.fa.fa-mouse-pointer])])
 
 (defn cube
   []
@@ -53,6 +53,7 @@
                          "rotateZ(" camera-z "deg)")]
       [:div#cube-page
        [camera-controls state]
+       
        [:div#cube-container {:style {:transform transform}}
         [:div.window
          [cube]]]])))

@@ -15,19 +15,19 @@
   [:div#bar
    [:div.contents
     [:h2.bar-item [:a {:href "/#/"} "adam jetmalani"]]
-    [:div.social.bar-item
-     (for [[social link] social-map]
-       ^{:key social}
-       [:a.social-link {:href link :target "_blank"}
-        [:i.fa {:class (str "fa-" social)}]])]
     [:div.thing-list.bar-item
-     [:h4 "Things"]
+     [:h4 "things"]
      [:div.list
       (for [place places]
         ^{:key place}
         [:div.thing
          [:a {:href (str "/#/" place)}
-          (str place " thing")]])]]]])
+          (str place " thing")]])]]
+        [:div.social.bar-item
+     (for [[social link] social-map]
+       ^{:key social}
+       [:a.social-link {:href link :target "_blank"}
+        [:i.fa.fa-lg {:class (str "fa-" social)}]])]]])
 
 (defn state-inspector
   [state]
