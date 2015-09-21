@@ -14,12 +14,12 @@
 (defn control-mat
   [state]
   [:div.mat-controls
-   (for [i (range 2)] 
-     ^{:key i} 
-     [:div.row
-      (for [j (range 3)]
-        ^{:key j} 
-        [index-controller state i j])])])
+   (mapcat
+    (fn [i]
+      (map
+       (fn [j] ^{:key [i j]} [index-controller state i j])
+       (range 3)))
+    (range 2))])
 
 (defn render-mat
   [a b tx c d ty & [child]]
