@@ -21,82 +21,20 @@ h4 { font-size: 20px; }
 
 // -------------------------------------------------------------------------------------------------
 
-@media (min-width: @breakpoint) {
-    #bar {
-        width: 20%;
-        max-width: 300px;
-        height: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        border-right: 3px solid @glacier;
 
-        > .contents {
-            padding: 40px 40px 0 40px;
-        }
 
-        .thing-list .thing {
-            border-bottom: 1px solid lighten(@glacier, 90%);
-        }
-    }
 
-    #page {
+// -------------------------------------------------------------------------------------------------
+
+#page {
+    @media(min-width: @breakpoint){
+        padding-left: 3px;
         width: 80%;
         position: absolute;
         top: 0;
         left: 20%;
     }
-
-    #home-page, #sorter-page, #matrix-page, #signal-page {
-        padding: 50px 0 0 50px;
-    }
-
-    .bar-item {
-        margin-bottom: 20px;
-    }
 }
-
-@media (max-width: @breakpoint) {
-    #bar {
-        border-bottom: 1px solid @glacier;
-        margin-bottom: 20px;
-    }
-    
-    #bar > .contents {
-        padding: 5px;
-        > h2 {
-            font-size: 20px;
-        }
-    }
-    
-    .social {
-        order: 2;
-        width: 250px;
-    }
-
-    .thing-list{
-        order: 3;
-        > h4 { display: none; }
-        > .list {
-            display: flex;
-            flex-flow: row wrap;
-            > .thing {
-                padding: 0 5px;
-            }
-        }
-    }
-
-    #home-page, #sorter-page, #matrix-page, #signal-page {
-        padding: 5px;
-    }
-
-    .bar-item {
-        margin-bottom: 5px;
-    }
-}
-
-
-// -------------------------------------------------------------------------------------------------
 
 #bar {
     background-color: #fff;
@@ -124,6 +62,61 @@ h4 { font-size: 20px; }
         border-bottom: 1px solid #fff;
         &:hover {
             border-color: @glacier;
+        }
+    }
+
+    @media (min-width: @breakpoint) {        
+        width: 20%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        border-right: 3px solid @glacier;
+
+        > .contents {
+            padding: 40px 40px 0 40px;
+        }
+
+        .thing-list .thing {
+            border-bottom: 1px solid lighten(@glacier, 90%);
+        }
+
+        .bar-item {
+            margin-bottom: 20px;
+        }
+    }
+
+    @media (max-width: @breakpoint) {
+        position: relative;
+        border-bottom: 1px solid @glacier;
+        margin-bottom: 20px;
+        
+        > .contents {
+            padding: 5px;
+            > h2 {
+                font-size: 20px;
+            }
+        }
+        
+        .social {
+            order: 2;
+            width: 250px;
+        }
+
+        .thing-list{
+            order: 3;
+            > h4 { display: none; }
+            > .list {
+                display: flex;
+                flex-flow: row wrap;
+                > .thing {
+                    padding-right: 10px;
+                }
+            }
+        }
+
+        .bar-item {
+            margin-bottom: 5px;
         }
     }
 }

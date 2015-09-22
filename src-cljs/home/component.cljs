@@ -5,7 +5,8 @@
    "flickr" "http://flickr.com/whatadam"
    "github-alt" "http://github.com/akjetma"
    "facebook" "http://facebook.com/adam.kumar.jetmalani"
-   "linkedin" "http://linkedin.com/in/akjetma"})
+   "linkedin" "http://linkedin.com/in/akjetma"
+   "envelope" "mailto:adamsinternetmailbox@gmail.com"})
 
 (def places
   ["sorter" "matrix" "cube" "signal"])
@@ -14,7 +15,7 @@
   [state]
   [:div#bar
    [:div.contents
-    [:h2.bar-item [:a {:href "/#/"} "adam jetmalani"]]
+    [:h2.bar-item [:a {:href "/#/home"} "adam jetmalani"]]
     [:div.thing-list.bar-item
      [:h4 "things"]
      [:div.list

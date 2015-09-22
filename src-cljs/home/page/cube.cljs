@@ -7,7 +7,7 @@
   [state side]
   [:div.face {:class side
               :on-click #(swap! state assoc side [cube])}
-   (get @state side [:i.fa.fa-mouse-pointer])])
+   (get @state side [:i.fa.fa-hand-pointer-o])])
 
 (defn cube
   []

@@ -6,15 +6,23 @@
             [home.page.cube :as cube]
             [home.page.signal :as signal]))
 
+(def page-map
+  {:home home/page
+   :sorter sorter/page
+   :matrix matrix/page
+   :cube cube/page
+   :signal signal/page})
+
 (defn nav
   [state page]
-  (swap! state assoc :current-page page))
+  (swap! state assoc :current-page (get page-map page)))
 
 (defn define-routes!
   [state]
-  (defroute home-path "/" [] (nav state home/page))
-  (defroute sorter-path "/sorter" [] (nav state sorter/page))
-  (defroute matrix-path "/matrix" [] (nav state matrix/page))
-  (defroute cube-path "/cube" [] (nav state cube/page))
-  (defroute signal-path "/signal" [] (nav state signal/page))
-  (defroute etc-path "*" [] (nav state home/page)))
+  (defroute landing-path "/" [] (nav state (rand-nth [:sorter :matrix :cube])))
+  (defroute home-path "/home" [] (nav state :home))
+  (defroute sorter-path "/sorter" [] (nav state :sorter))
+  (defroute matrix-path "/matrix" [] (nav state :matrix))
+  (defroute cube-path "/cube" [] (nav state :cube))
+  (defroute signal-path "/signal" [] (nav state :signal))
+  (defroute etc-path "*" [] (nav state :home)))
