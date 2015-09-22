@@ -94,6 +94,8 @@
   [state]
   (let [{{:keys [num-columns items]} :sorter} @state]
     [:div#sortable-list
+     {:style
+      {:width (str (* num-columns 55) "px")}}
      (for [[id {hue :hue :as item}] items]
        ^{:key [id hue]} [list-item num-columns id item])]))
 
