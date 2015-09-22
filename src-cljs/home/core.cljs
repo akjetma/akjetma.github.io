@@ -23,6 +23,7 @@
 
 (defn initialize-secretary!
   [state history]
+  (secretary/set-config! :prefix "#")  
   (goog.events/listen
    history EventType/NAVIGATE 
    #(navigate state (.-token %)))
@@ -32,13 +33,12 @@
   [state]
   (reagent/render-component
    [component/app state]
-   (.getElementById js/document "app")))
+   (.-body js/document)))
 
 (defonce load
   (let [state (reagent/atom {})
         history (History.)]
     (enable-console-print!)
-    (secretary/set-config! :prefix "#")
     (initialize-state! state)
     (routes/define-routes! state)
     (initialize-secretary! state history)

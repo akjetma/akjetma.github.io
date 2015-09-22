@@ -27,7 +27,7 @@
      (for [[social link] social-map]
        ^{:key social}
        [:a.social-link {:href link :target "_blank"}
-        [:i.fa.fa-lg {:class (str "fa-" social)}]])]]])
+        [:i.fa {:class (str "fa-" social)}]])]]])
 
 (defn state-inspector
   [state]
@@ -48,7 +48,7 @@
 
 (defn app
   [state]
-  [:div
+  [:div#app
    [bar state]
    [:div#page [(:current-page @state) state]]
    [state-inspector state]])
