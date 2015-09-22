@@ -63,18 +63,18 @@
   [state]
   (let [{{:keys [num-columns items]} :sorter} @state
         num-items (count items)]
-    [:div#sortable-controls
-     [:input 
+    [:div.controls
+     [:input.sort-control
       {:type "number"
        :value num-items
        :on-change #(swap! state assoc-in [:sorter :items] (-> % .-target .-value js/parseInt generate-items))}]
-     [:input.slider 
+     [:input.sort-control 
       {:type "range"
        :min 1
        :max 30
        :value num-columns
        :on-change #(swap! state assoc-in [:sorter :num-columns] (-> % .-target .-value js/parseInt))}]
-     [:div.btns
+     [:div.sort-control.sort-type
       [:span.btn {:on-click #(swap! state update-in [:sorter :items] shuffle-ranks)} (:shuffle emoji)]
       [:span.btn {:on-click #(swap! state update-in [:sorter :items] reverse-ranks)} (:reverse emoji)]
       [:span.btn {:on-click #(swap! state update-in [:sorter :items] rank-by-hue)} (:rainbow emoji)]]]))
@@ -93,7 +93,7 @@
 (defn item-list
   [state]
   (let [{{:keys [num-columns items]} :sorter} @state]
-    [:div#sortable-list
+    [:div.list
      {:style
       {:width (str (* num-columns 55) "px")}}
      (for [[id {hue :hue :as item}] items]

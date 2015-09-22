@@ -10,38 +10,49 @@
     flex-direction: column;
     align-items: center;
 
+    > .list {
+        position: relative;
+        margin-top: 20px;
+        transition: width 1.5s ease-in-out;
+        height: 550px;
+        
+        > .item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 50px;
+            transition: transform 1.5s ease-in-out;
+            -webkit-transition: -webkit-transform 1.5s ease-in-out;
+        }
+    }
+
+    > .controls {        
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-around;
+        align-items: center;
+        > .sort-control {
+            flex-grow: 1;
+            margin: 5px;
+        }
+        > .sort-type {
+            flex-grow: 0;
+            display: flex;
+            justify-content: space-around;
+            > .btn {
+
+            }
+        }
+    }
+    
     @media (min-width: @breakpoint) {
         height: 100vh;
         justify-content: center;
     }
 }
 
-#sortable-list {
-    position: relative;
-    margin-top: 20px;
-    transition: width 1.5s ease-in-out;
-    height: 550px;
-    
-    > .item {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 50px;
-        height: 50px;
-        transition: transform 1.5s ease-in-out;
-        -webkit-transition: -webkit-transform 1.5s ease-in-out;
-    }
-}
 
-#sortable-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .slider {
-        margin: 0 10px;
-        flex-grow: 1;
-    }
-}
 
 
 
