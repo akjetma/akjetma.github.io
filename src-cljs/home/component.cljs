@@ -9,7 +9,7 @@
    "envelope" "mailto:adamsinternetmailbox@gmail.com"})
 
 (def places
-  ["sorter" "matrix" "cube" "signal"])
+  ["sorter" "matrix" "cube" "camera"])
 
 (defn bar
   [state]
