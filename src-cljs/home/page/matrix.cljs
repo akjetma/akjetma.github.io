@@ -23,10 +23,12 @@
 
 (defn render-mat
   [a b tx c d ty & [child]]
-  [:div.mat 
-   {:style 
-    {:transform (str "matrix(" (->> [a c b d (* 10 tx) (* 10 ty)] (interpose ",") (apply str)) ")")}}
-   child])
+  (let [transform (str "matrix(" (->> [a c b d (* 10 tx) (* 10 ty)] (interpose ",") (apply str)) ")")]
+    [:div.mat 
+     {:style 
+      {:transform transform
+       :-webkit-transform transform}}
+     child]))
 
 (defn display-mat
   [state]

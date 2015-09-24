@@ -16,6 +16,7 @@
       [:div.cube
        (map 
         (fn [side]
+          ^{:key side}
           [face cube-state side])
         ["front" "top" "right" "left" "bottom" "back"])])))
 
@@ -54,6 +55,7 @@
       [:div#cube-page
        [camera-controls state]
        
-       [:div#cube-container {:style {:transform transform}}
+       [:div#cube-container {:style {:transform transform
+                                     :-webkit-transform transform}}
         [:div.window
          [cube]]]])))
