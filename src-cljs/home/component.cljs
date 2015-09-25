@@ -1,4 +1,5 @@
-(ns home.component)
+(ns home.component
+  (:require [home.routes :as routes]))
 
 (def social-map
   {"twitter" "http://twitter.com/_magnusmagnus"
@@ -9,26 +10,27 @@
    "envelope" "mailto:adamsinternetmailbox@gmail.com"})
 
 (def places
-  ["sorter" "matrix" "cube" "camera"])
+  [:sorter :matrix :cube :camera])
 
 (defn bar
   [state]
-  [:div#bar
-   [:div.contents
-    [:h2.bar-item [:a {:href "/#/home"} "adam jetmalani"]]
-    [:div.thing-list.bar-item
-     [:h4 "things"]
-     [:div.list
-      (for [place places]
-        ^{:key place}
-        [:div.thing
-         [:a {:href (str "/#/" place)}
-          (str place " thing")]])]]
-        [:div.social.bar-item
-     (for [[social link] social-map]
-       ^{:key social}
-       [:a.social-link {:href link :target "_blank"}
-        [:i.fa {:class (str "fa-" social)}]])]]])
+  (let [possible (:things @state)]
+    [:div#bar
+     [:div.contents
+      [:h2.bar-item [:a {:href "/#/home"} "adam jetmalani"]]
+      [:div.thing-list.bar-item
+       [:h4 "things"]
+       [:div.list
+        (for [place places]
+          ^{:key place}
+          [:div.thing (when-not (some #{place} possible) {:class "impossible"})
+           [:a {:href (str "/#/" (name place))}
+            (str (name place) " thing")]])]]
+      [:div.social.bar-item
+       (for [[social link] social-map]
+         ^{:key social}
+         [:a.social-link {:href link :target "_blank"}
+          [:i.fa {:class (str "fa-" social)}]])]]]))
 
 (defn state-inspector
   [state]
@@ -41,7 +43,7 @@
      (when shown?
        [:div.code-container
         [:code.edn-map 
-         (for [[k v] (dissoc @state :current-page)]
+         (for [[k v] @state]
            ^{:key k}
            [:div.pair
             [:span.key (str k)]
@@ -51,5 +53,5 @@
   [state]
   [:div#app
    [bar state]
-   [:div#page [(:current-page @state) state]]
+   [:div#page [(get routes/page-map (:current-page @state)) state]]
    [state-inspector state]])

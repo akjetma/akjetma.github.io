@@ -13,6 +13,7 @@ a {
     &:hover { text-decoration: underline; }
 }
 
+h1 { font-size: 50px; }
 h2 { font-size: 30px; }
 h4 { font-size: 20px; }
 
@@ -53,9 +54,14 @@ h4 { font-size: 20px; }
     }
 
     .thing-list > .list {
-        > .thing {
+        > .thing > a {
             font-weight: 200;
             letter-spacing: 1px;
+        }
+
+        > .thing.impossible > a {
+            text-decoration: line-through;
+            color: #999;
         }
     }
 

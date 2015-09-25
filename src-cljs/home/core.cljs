@@ -4,7 +4,8 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [home.routes :as routes]
-            [home.component :as component])
+            [home.component :as component]
+            [home.support :as support])
   (:import goog.History))
 
 (defn navigate
@@ -14,12 +15,14 @@
 
 (defn initialize-state!
   [state]
-  (reset! 
-   state 
-   {:show-inspector? false
-    :initialized true
-    :nav-count 0
-    :current-page (constantly [:div])}))
+  (let [browser (support/browser-type)]
+    (reset! 
+     state 
+     {:browser browser
+      :things (get support/browser-things browser)
+      :show-inspector? false
+      :initialized true
+      :nav-count 0})))
 
 (defn initialize-secretary!
   [state history]

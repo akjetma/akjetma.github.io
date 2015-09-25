@@ -5,7 +5,8 @@
             [home.page.matrix :as matrix]
             [home.page.cube :as cube]
             [home.page.signal :as signal]
-            [home.page.camera :as camera]))
+            [home.page.camera :as camera]
+            [home.page.unsupported :as unsupported]))
 
 (def page-map
   {:home home/page
@@ -13,15 +14,18 @@
    :matrix matrix/page
    :cube cube/page
    :signal signal/page
-   :camera camera/page})
+   :camera camera/page
+   :unsupported unsupported/page})
 
 (defn nav
   [state page]
-  (swap! state assoc :current-page (get page-map page)))
+  (if (some #{page} (:things @state))
+    (swap! state assoc :current-page page)
+    (swap! state assoc :current-page :unsupported)))
 
 (defn define-routes!
   [state]
-  (defroute landing-path "/" [] (nav state (rand-nth [:sorter :matrix :cube :camera])))
+  (defroute landing-path "/" [] (nav state (rand-nth (:things @state))))
   (defroute home-path "/home" [] (nav state :home))
   (defroute sorter-path "/sorter" [] (nav state :sorter))
   (defroute matrix-path "/matrix" [] (nav state :matrix))
