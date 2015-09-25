@@ -3,7 +3,7 @@
 (def browser-things
   {:chrome [:sorter :matrix :cube :camera]
    :safari [:sorter :matrix :cube]
-   :firefox [:sorter :camera]
+   :firefox [:matrix :sorter :camera]
    :other [:sorter :matrix :cube :camera]})
 
 (defn browser-type

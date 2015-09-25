@@ -27,7 +27,8 @@
     [:div.mat 
      {:style 
       {:transform transform
-       :-webkit-transform transform}}
+       :-webkit-transform transform
+       :-moz-transform transform}}
      child]))
 
 (defn display-mat
@@ -35,14 +36,14 @@
   (let [{[[a b tx] [c d ty]] :matrix} @state
         renderable (partial vector render-mat a b tx c d ty)]
     [:div.mat-container
-     (reduce (fn [nest render-fn] (render-fn nest)) (renderable) (repeat 25 renderable))]))
+     (reduce (fn [nest render-fn] (render-fn nest)) (renderable) (repeat (:depth @state) renderable))]))
 
 (defn page
   [state]
   (when-not (:matrix @state)
-    (swap! state assoc :matrix
-           [[1 0 0]
-            [0 1 0]]))
+    (swap! state assoc
+           :matrix [[1 0 0] [0 1 0]]
+           :depth (if (= :firefox (:browser @state)) 10 25)))
   (fn matrix-page
     [state]
     [:div#matrix-page
