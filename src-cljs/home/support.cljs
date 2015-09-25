@@ -1,7 +1,7 @@
 (ns home.support)
 
 (def browser-things
-  {:chrome [:matrix :cube :camera]
+  {:chrome [:sorter :matrix :cube :camera]
    :safari [:sorter :matrix :cube]
    :firefox [:sorter :camera]
    :other [:sorter :matrix :cube :camera]})
