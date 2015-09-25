@@ -12,7 +12,7 @@
     (cond
       (and (.-chrome js/window) (not is-opera)) :chrome
       is-opera :opera
-      (exists? (.-InstallTrigger js/window)) :firefox
+      (.-InstallTrigger js/window) :firefox
       (-> js/Object .-prototype .-toString (.call (.-HTMLElement js/window)) (.indexOf "Constructor") (> 0)) :safari
       (or false (.-documentMode js/document)) :ie
       :else :other)))
