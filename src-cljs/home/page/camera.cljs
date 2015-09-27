@@ -1,7 +1,8 @@
 (ns home.page.camera
   (:require [reagent.core :as reagent]))
 
-(def framerate (/ 1000 30))
+(def framerate (/ 1000 60))
+(def buffer-ct 40)
 
 (defn set-gum?
   []
@@ -11,58 +12,70 @@
     true))
 
 (defn render-loop
-  [contexts video]
-  (let [num (count contexts)
-        width (.-videoWidth video)
-        height (quot (.-videoHeight video) num)]
+  [state]
+  (let [{output :camera-output
+         buffer :camera-buffer
+         video :camera-video
+         {:keys [width height]} :camera-dimensions} @state
+         row-height (/ height buffer-ct)
+         old-buffer-data (.getImageData buffer 0 0 (* (dec buffer-ct) width) height)]   
+    (.drawImage buffer video 0 0)
+    (.putImageData buffer old-buffer-data width 0)
     (doall
-     (map-indexed
-      (fn [n context]        
-        (.drawImage context video 0 (* n height) width height 0 0 width height))
-      contexts)))
-  (.setTimeout js/window #(render-loop contexts video) framerate))
+     (for [row (range buffer-ct)]
+       (.putImageData output
+                      (.getImageData buffer (* width row) (* row-height row) width row-height)
+                      0
+                      (* row-height row))))
+    (.setTimeout js/window #(render-loop state) framerate)))
 
 (defn start-loop
-  [contexts video object-url]
-  (set! (.-src video) object-url)
-  (.setTimeout js/window #(render-loop contexts video) 1000))
+  [state]
+  (let [{:keys [camera-video camera-object-url]} @state]
+    (set! (.-src camera-video) camera-object-url)
+    (.setTimeout js/window #(render-loop state) 1000)))
 
 (defn got-media
-  [state contexts video stream]
-  (let [object-url (-> js/window .-URL (.createObjectURL stream))]
-    (swap!
-     state assoc
-     :camera-stream stream
-     :camera-object-url object-url)
-    (start-loop contexts video object-url)))
+  [state stream]
+  (swap! state assoc :camera-object-url (-> js/window .-URL (.createObjectURL stream)))
+  (start-loop state))
 
 
 
 
 
 (defn output-render
-  [state total n]
-  (let [id (str "output-" n)
-        dimensions (:camera-dimensions @state)
-        width (:width dimensions)
-        height (quot (:height dimensions) total)]
-    [:canvas.output
-     {:id id :width width :height height}]))
+  [state]
+  (let [{:keys [width height]} (:camera-dimensions @state)]
+    [:canvas#output {:width width :height height}]))
 
 (defn output-did-mount
-  [state n]
-  (.log js/console "output-did-mount")
-  (let [canvas (.querySelector js/document (str "#output-" n))
-        context (.getContext canvas "2d")]
-    (swap! state update-in [:camera-contexts] (fnil conj []) context)))
+  [state]
+  (swap! state assoc :camera-output (-> js/document (.querySelector "#output") (.getContext "2d"))))
 
 (defn output
-  [state total n]
+  [state]
   (reagent/create-class
    {:reagent-render output-render
-    :component-did-mount #(output-did-mount state n)}))
+    :component-did-mount #(output-did-mount state)}))
 
 
+
+
+(defn buffer-render
+  [state]
+  (let [{:keys [width height]} (:camera-dimensions @state)]
+    [:canvas#buffer {:width (* buffer-ct width) :height height}]))
+
+(defn buffer-did-mount
+  [state]
+  (swap! state assoc :camera-buffer (-> js/document (.querySelector "#buffer") (.getContext "2d"))))
+
+(defn buffer
+  [state]
+  (reagent/create-class
+   {:reagent-render buffer-render
+    :component-did-mount #(buffer-did-mount state)}))
 
 
 (defn input-render
@@ -71,13 +84,10 @@
 
 (defn input-did-mount
   [state]
-  (.log js/console "input-did-mount")
   (let [video (.querySelector js/document "#input")]
     (swap! state assoc :camera-video video)
-    (.addEventListener
-     video "canplay"
-     #(swap! state assoc
-             :camera-dimensions {:width (.-videoWidth video) :height (.-videoHeight video)}))))
+    (.addEventListener video "canplay"
+     #(swap! state assoc :camera-dimensions {:width (-> % .-target .-videoWidth) :height (-> % .-target .-videoHeight)}))))
 
 (defn input
   [state]
@@ -90,29 +100,26 @@
 
 (defn page-render
   [state]
-  (let [canvases (:camera-canvas-count @state)]
-    [:div#camera-page
-     [input state]
-     (for [n (range canvases)]
-       ^{:key n}
-       [output state canvases n])]))
+  [:div#camera-page
+   [input state]
+   [buffer state]
+   [output state]])
 
 (defn page-did-mount
   [state]
-  (.log js/console "page-did-mount")
-  (let [{:keys [camera-contexts camera-video camera-object-url]} @state]
-    (if camera-object-url
-      (start-loop camera-contexts camera-video camera-object-url) 
-      (if (set-gum?)
-        (.getUserMedia
-         js/navigator #js {:video true}
-         (partial got-media state camera-contexts camera-video)
-         #(.log js/console "error: " %))
-        (swap! state assoc :camera-error :unsupported)))))
+  (cond
+    (:camera-object-url @state) (start-loop state) 
+
+    (set-gum?)
+    (.getUserMedia
+     js/navigator #js {:video true}
+     (partial got-media state)
+     #(.log js/console "error: " %))
+
+    :else (swap! state assoc :camera-error :unsupported)))
 
 (defn page
   [state]
-  (swap! state assoc :camera-canvas-count 10)
   (reagent/create-class
    {:reagent-render page-render
     :component-did-mount #(page-did-mount state)}))

@@ -233,13 +233,16 @@
 
 #camera-page {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+
+    #buffer {
+        display: none;
+    }
     
-    .output {
-        height: 11vh;
-        flex-shrink: 0;
+    #output {
+        height: 110%;
     }
     
     #input {
