@@ -1,7 +1,7 @@
 (ns home.page.camera
   (:require [reagent.core :as reagent]))
 
-(def framerate (/ 1000 60))
+(def framerate (/ 1000 300))
 (def buffer-ct 40)
 
 (defn set-gum?
@@ -11,29 +11,35 @@
     (set! (.-getUserMedia js/navigator) gum)
     true))
 
-(defn render-loop
-  [state]
-  (let [{output :camera-output
-         buffer :camera-buffer
-         video :camera-video
-         {:keys [width height]} :camera-dimensions} @state
-         row-height (/ height buffer-ct)
-         old-buffer-data (.getImageData buffer 0 0 (* (dec buffer-ct) width) height)]   
+(defn buffer-loop
+  [buffer video width height]
+  (let [old-buffer-data (.getImageData buffer 0 0 (* (dec buffer-ct) width) height)]   
     (.drawImage buffer video 0 0)
     (.putImageData buffer old-buffer-data width 0)
-    (doall
-     (for [row (range buffer-ct)]
-       (.putImageData output
-                      (.getImageData buffer (* width row) (* row-height row) width row-height)
-                      0
-                      (* row-height row))))
-    (.setTimeout js/window #(render-loop state) framerate)))
+    (.setTimeout js/window #(buffer-loop buffer video width height) framerate)))
+
+(defn output-loop
+  [output buffer width row-height]
+  (doall
+   (for [row (range buffer-ct)]
+     (.putImageData
+      output
+      (.getImageData buffer (* width row) (* row-height row) width row-height)
+      0
+      (* row-height row))))
+  (.setTimeout js/window #(output-loop output buffer width row-height) framerate))
 
 (defn start-loop
   [state]
-  (let [{:keys [camera-video camera-object-url]} @state]
+  (let [{:keys [camera-video camera-object-url camera-output camera-buffer]} @state]
     (set! (.-src camera-video) camera-object-url)
-    (.setTimeout js/window #(render-loop state) 1000)))
+    (.setTimeout
+     js/window
+     (fn []
+       (let [{:keys [width height]} (:camera-dimensions @state)]
+         (buffer-loop camera-buffer camera-video width height)
+         (output-loop camera-output camera-buffer width (/ height buffer-ct))))
+     1000)))
 
 (defn got-media
   [state stream]
