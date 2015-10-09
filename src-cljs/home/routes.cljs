@@ -25,7 +25,7 @@
 
 (defn define-routes!
   [state]
-  (defroute landing-path "/" [] (nav state (rand-nth (:things @state))))
+  (defroute landing-path "/" [] (nav state (rand-nth (remove #{:home :camera} (:things @state)))))
   (defroute home-path "/home" [] (nav state :home))
   (defroute sorter-path "/sorter" [] (nav state :sorter))
   (defroute matrix-path "/matrix" [] (nav state :matrix))
