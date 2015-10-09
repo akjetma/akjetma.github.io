@@ -1,8 +1,8 @@
 (ns home.page.camera
   (:require [reagent.core :as reagent]))
 
-(def framerate (/ 1000 300))
-(def buffer-ct 40)
+(def framerate (/ 1000 60))
+(def buffer-ct 20)
 
 (defn set-gum?
   []
@@ -11,118 +11,97 @@
     (set! (.-getUserMedia js/navigator) gum)
     true))
 
-(defn buffer-loop
-  [buffer video width height]
-  (let [old-buffer-data (.getImageData buffer 0 0 (* (dec buffer-ct) width) height)]   
-    (.drawImage buffer video 0 0)
-    (.putImageData buffer old-buffer-data width 0)
-    (.setTimeout js/window #(buffer-loop buffer video width height) framerate)))
+(defn frame-dim
+  [buff-width buff-height h-thick v-thick n]
+  {:width (- buff-width (* 2 h-thick n))
+   :height (- buff-height (* 2 v-thick n))})
 
-(defn output-loop
-  [output buffer width row-height]
-  (doall
-   (for [row (range buffer-ct)]
-     (.putImageData
-      output
-      (.getImageData buffer (* width row) (* row-height row) width row-height)
-      0
-      (* row-height row))))
-  (.setTimeout js/window #(output-loop output buffer width row-height) framerate))
+(defn frame-pos
+  [h-thick v-thick n]
+  {:x (* h-thick n)
+   :y (* v-thick n)})
+
+(defn get-frame
+  [buff-array buff-width {:keys [width height]} {:keys [x y]} n]
+  (.getImageData
+   buff-array
+   (+ (* buff-width n) x)
+   y
+   width
+   height))
+
+(defn render-loop
+  [video buff-array output width height]
+  (let [v-thick (/ height buffer-ct 2)
+        h-thick (/ width buffer-ct 2)
+        old-buffer-data (.getImageData buff-array 0 0 (* (dec buffer-ct) width) height)
+        get-dim (partial frame-dim width height h-thick v-thick)
+        get-pos (partial frame-pos h-thick v-thick)]   
+    (.drawImage buff-array video 0 0)
+    (.putImageData buff-array old-buffer-data width 0)
+    (doall
+     (for [n (range buffer-ct)
+           :let [dim (get-dim n)
+                 pos (get-pos n)
+                 frame (get-frame buff-array width dim pos (- buffer-ct n))]]
+       (.putImageData
+        output
+        frame
+        (:x pos)
+        (:y pos))))))
 
 (defn start-loop
-  [state]
-  (let [{:keys [camera-video camera-object-url camera-output camera-buffer]} @state]
-    (set! (.-src camera-video) camera-object-url)
-    (.setTimeout
+  [video buff-array output width height]
+  (let [buff-array (.getContext buff-array "2d")
+        output (.getContext output "2d")]
+    (.setInterval
      js/window
-     (fn []
-       (let [{:keys [width height]} (:camera-dimensions @state)]
-         (buffer-loop camera-buffer camera-video width height)
-         (output-loop camera-output camera-buffer width (/ height buffer-ct))))
-     1000)))
+     #(render-loop video buff-array output width height)
+     framerate)))
+
+(defn set-dims
+  [elem width height]
+  (.setAttribute elem "width" width)
+  (.setAttribute elem "height" height))
+
+(defn can-play
+  [video buff-array output e]
+  (let [width (.-videoWidth video)
+        height (.-videoHeight video)]
+    (set-dims output width height)
+    (set-dims buff-array (* buffer-ct width) height)
+    (start-loop video buff-array output width height)))
 
 (defn got-media
-  [state stream]
-  (swap! state assoc :camera-object-url (-> js/window .-URL (.createObjectURL stream)))
-  (start-loop state))
-
-
-
-
-
-(defn output-render
-  [state]
-  (let [{:keys [width height]} (:camera-dimensions @state)]
-    [:canvas#output {:width width :height height}]))
-
-(defn output-did-mount
-  [state]
-  (swap! state assoc :camera-output (-> js/document (.querySelector "#output") (.getContext "2d"))))
-
-(defn output
-  [state]
-  (reagent/create-class
-   {:reagent-render output-render
-    :component-did-mount #(output-did-mount state)}))
-
-
-
-
-(defn buffer-render
-  [state]
-  (let [{:keys [width height]} (:camera-dimensions @state)]
-    [:canvas#buffer {:width (* buffer-ct width) :height height}]))
-
-(defn buffer-did-mount
-  [state]
-  (swap! state assoc :camera-buffer (-> js/document (.querySelector "#buffer") (.getContext "2d"))))
-
-(defn buffer
-  [state]
-  (reagent/create-class
-   {:reagent-render buffer-render
-    :component-did-mount #(buffer-did-mount state)}))
-
-
-(defn input-render
-  [_]
-  [:video#input {:auto-play true}])
-
-(defn input-did-mount
-  [state]
-  (let [video (.querySelector js/document "#input")]
-    (swap! state assoc :camera-video video)
-    (.addEventListener video "canplay"
-     #(swap! state assoc :camera-dimensions {:width (-> % .-target .-videoWidth) :height (-> % .-target .-videoHeight)}))))
-
-(defn input
-  [state]
-  (reagent/create-class
-   {:reagent-render input-render
-    :component-did-mount #(input-did-mount state)}))
-
-
-
+  [video buff-array output stream]
+  (set! (.-src video) (-> js/window .-URL (.createObjectURL stream)))
+  (.addEventListener
+   video "canplay"
+   (partial can-play video buff-array output)))
 
 (defn page-render
   [state]
   [:div#camera-page
-   [input state]
-   [buffer state]
-   [output state]])
+   [:video#input {:auto-play true}]
+   [:canvas#buffer]
+   [:canvas#output]])
+
+(defn error
+  ([message] (error message nil))
+  ([message e]
+   (.log js/console (str message " :") e)))
 
 (defn page-did-mount
   [state]
-  (cond
-    (:camera-object-url @state) (start-loop state) 
-
-    (set-gum?)
-    (.getUserMedia
-     js/navigator #js {:video true}
-     (partial got-media state)
-     #(.log js/console "error: " %))
-
-    :else (swap! state assoc :camera-error :unsupported)))
+  (let [video (.querySelector js/document "#input")
+        buff-array (.querySelector js/document "#buffer")
+        output (.querySelector js/document "#output")]
+    (if (set-gum?)
+      (.getUserMedia
+       js/navigator #js {:video true}
+       (partial got-media video buff-array output)
+       (partial error "error getting user media"))
+      (error "browser not supported"))))
 
 (defn page
   [state]
