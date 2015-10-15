@@ -1,10 +1,10 @@
 (ns home.support)
 
 (def browser-things
-  {:chrome [:home :sorter :matrix :cube :camera]
-   :safari [:home :sorter :matrix :cube]
-   :firefox [:home :matrix :sorter :camera]
-   :other [:home :sorter :matrix :cube :camera]})
+  {:chrome [:home :sorter :matrix :cube :camera :shader]
+   :safari [:home :sorter :matrix :cube :shader]
+   :firefox [:home :matrix :sorter :camera :shader]
+   :other [:home :sorter :matrix :cube :camera :shader]})
 
 (defn browser-type
   []

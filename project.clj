@@ -25,6 +25,7 @@
                         :source-paths ["src-cljs"]
                         :compiler {:main "home.core"
                                    :output-to "resources/public/js/app.min.js"
+                                   :externs ["resources/public/js/shader-externs.js"]
                                    :optimizations :advanced
                                    :pretty-print false}}]}
 

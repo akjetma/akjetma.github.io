@@ -9,9 +9,6 @@
    "linkedin" "http://linkedin.com/in/akjetma"
    "envelope" "mailto:adamsinternetmailbox@gmail.com"})
 
-(def places
-  [:sorter :matrix :cube :camera])
-
 (defn bar
   [state]
   (let [possible (:things @state)]
@@ -21,7 +18,7 @@
       [:div.thing-list.bar-item
        [:h4 "things"]
        [:div.list
-        (for [place places]
+        (for [place routes/current-things]
           ^{:key place}
           [:div.thing (when-not (some #{place} possible) {:class "impossible"})
            [:a {:href (str "/#/" (name place))}
