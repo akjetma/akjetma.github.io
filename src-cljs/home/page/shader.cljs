@@ -1,7 +1,7 @@
 (ns home.page.shader
   (:require [reagent.core :as reagent])
   (:require-macros [home.macros :as macros]))
-
+ 
 (defn shader
   [id type body]
   [:script
@@ -14,14 +14,19 @@
   [:div#shader-page
    [shader "vs" "vertex" (macros/slurp "resources/public/js/shader/vertex.c")]
    [shader "fs" "fragment" (macros/slurp "resources/public/js/shader/fragment.c")]
-   [:canvas#shader-canvas]])
+   [:canvas#shader-canvas {:width 450 :height 300}]])
 
 (defn page-did-mount
   []
   (.start js/shaderJS))
 
+(defn page-will-unmount
+  []
+  (.stop js/shaderJS))
+
 (defn page
   [_]
   (reagent/create-class
    {:reagent-render page-render
-    :component-did-mount page-did-mount}))
+    :component-did-mount page-did-mount
+    :component-will-unmount page-will-unmount}))
