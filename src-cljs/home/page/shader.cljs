@@ -14,7 +14,7 @@
   [:div#shader-page
    [shader "vs" "vertex" (macros/slurp "resources/public/js/shader/vertex.c")]
    [shader "fs" "fragment" (macros/slurp "resources/public/js/shader/fragment.c")]
-   [:canvas#shader-canvas {:width 450 :height 300}]])
+   [:canvas#shader-canvas]])
 
 (defn page-did-mount
   []
