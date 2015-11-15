@@ -138,7 +138,7 @@ var shaderJS = function () {
   }
 
   function stop() {
-    clearInterVal(animate);
+    clearInterval(animate);
     animate = null;
   }
   
