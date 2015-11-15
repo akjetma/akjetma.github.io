@@ -1,6 +1,7 @@
 (ns home.page.camera
   (:require [reagent.core :as reagent]))
 
+(defonce animate (atom nil))
 (def framerate (/ 1000 60))
 (def buffer-ct 20)
 
@@ -54,10 +55,17 @@
   [video buff-array output width height]
   (let [buff-array (.getContext buff-array "2d")
         output (.getContext output "2d")]
-    (.setInterval
-     js/window
-     #(render-loop video buff-array output width height)
-     framerate)))
+    (reset!
+     animate
+     (.setInterval
+      js/window
+      #(render-loop video buff-array output width height)
+      framerate))))
+
+(defn stop-loop
+  []
+  (.clearInterval js/window @animate)
+  (reset! animate nil))
 
 (defn set-dims
   [elem width height]
@@ -107,4 +115,5 @@
   [state]
   (reagent/create-class
    {:reagent-render page-render
-    :component-did-mount #(page-did-mount state)}))
+    :component-did-mount #(page-did-mount state)
+    :component-will-unmount stop-loop}))

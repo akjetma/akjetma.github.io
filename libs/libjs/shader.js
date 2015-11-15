@@ -1,4 +1,6 @@
-var shaderJS = function () {
+goog.provide("libjs.shader");
+
+libjs.shader = function () {
   var animate;
   
   function createShaderFromScriptElement(gl, type, id) {

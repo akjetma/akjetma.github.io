@@ -1,5 +1,6 @@
 (ns home.page.shader
-  (:require [reagent.core :as reagent])
+  (:require [reagent.core :as reagent]
+            [libjs.shader :as shader])
   (:require-macros [home.macros :as macros]))
  
 (defn shader
@@ -17,17 +18,9 @@
    [shader "fs" "fragment" (macros/slurp "resources/public/js/shader/fragment.c")]
    [:canvas#shader-canvas]])
 
-(defn page-did-mount
-  []
-  (.start js/shaderJS))
-
-(defn page-will-unmount
-  []
-  (.stop js/shaderJS))
-
 (defn page
   [_]
   (reagent/create-class
    {:reagent-render page-render
-    :component-did-mount page-did-mount
-    :component-will-unmount page-will-unmount}))
+    :component-did-mount shader/start
+    :component-will-unmount shader/stop}))

@@ -18,6 +18,7 @@
                         :figwheel {:on-jsload "home.core/load"}
                         :compiler {:main "home.core"
                                    :asset-path "js/out"
+                                   :libs ["libs"]
                                    :output-to "resources/public/js/app.dev.js"
                                    :output-dir "resources/public/js/out"
                                    :source-map-timestamp true}}
@@ -25,7 +26,7 @@
                         :source-paths ["src-cljs"]
                         :compiler {:main "home.core"
                                    :output-to "resources/public/js/app.min.js"
-                                   :externs ["resources/public/js/shader-externs.js"]
+                                   :libs ["libs"]
                                    :optimizations :advanced
                                    :pretty-print false}}]}
 
