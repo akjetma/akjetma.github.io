@@ -97,11 +97,24 @@ var shaderJS = function () {
     textures.next = textures.prev;
     textures.prev = tmp;
   }
+
+  function minSquare(size) {
+    var pow = 2;
+    var square = Math.pow(2, pow);
+    while (square - size < 0){
+      pow++;
+      square = Math.pow(2, pow);
+    }
+    return square;
+  }
   
   function start() {
     var canvas = document.getElementById("shader-canvas");
-    var w = canvas.width = 2048;
-    var h = canvas.height = w;
+    var page = document.getElementById ("shader-page");
+    canvas.width = page.offsetWidth;
+    canvas.height = page.offsetHeight;
+    var w = minSquare(canvas.width > canvas.height ? canvas.width : canvas.height);
+    var h = w;
     var gl = canvas.getContext("webgl");
     var scale = 4;
     var viewSize = [w, h];
