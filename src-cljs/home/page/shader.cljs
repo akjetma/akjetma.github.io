@@ -12,6 +12,7 @@
 (defn page-render
   [_]
   [:div#shader-page
+   [shader "copy" "fragment" (macros/slurp "resources/public/js/shader/copy.c")]
    [shader "vs" "vertex" (macros/slurp "resources/public/js/shader/vertex.c")]
    [shader "fs" "fragment" (macros/slurp "resources/public/js/shader/fragment.c")]
    [:canvas#shader-canvas]])

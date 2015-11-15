@@ -10,7 +10,7 @@
             [home.page.unsupported :as unsupported]))
 
 (def current-things
-  [:sorter :matrix :cube :camera])
+  [:sorter :matrix :cube :camera :shader])
 
 (def page-map
   {:home home/page
