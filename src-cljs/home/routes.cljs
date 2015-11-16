@@ -7,6 +7,7 @@
             [home.page.signal :as signal]
             [home.page.camera :as camera]
             [home.page.shader :as shader]
+            [home.page.shader-2 :as shader-2]
             [home.page.unsupported :as unsupported]))
 
 (def current-things
@@ -20,6 +21,7 @@
    :signal signal/page
    :camera camera/page
    :shader shader/page
+   :shader-2 shader-2/page
    :unsupported unsupported/page})
 
 (defn nav
@@ -38,4 +40,5 @@
   (defroute signal-path "/signal" [] (nav state :signal))
   (defroute camera-path "/camera" [] (nav state :camera))
   (defroute shader-path "/shader" [] (nav state :shader))
+  (defroute shader-2-path "/shader-2" [] (nav state :shader-2))
   (defroute etc-path "*" [] (nav state :home)))

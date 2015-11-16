@@ -4,7 +4,7 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [home.routes :as routes]
-            [home.component :as component]
+            [home.component.app :as app]
             [home.support :as support])
   (:import goog.History))
 
@@ -35,7 +35,7 @@
 (defn initialize-reagent!
   [state]
   (reagent/render-component
-   [component/app state]
+   [app/app state]
    (.-body js/document)))
 
 (defonce load

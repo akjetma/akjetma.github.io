@@ -1,4 +1,4 @@
-(ns home.component
+(ns home.component.app
   (:require [home.routes :as routes]))
 
 (def social-map
