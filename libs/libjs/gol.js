@@ -2,8 +2,14 @@ goog.provide("libjs.gol");
 
 goog.require("libjs.shader");
 
-libjs.gol = function () {
-  function draw(gl, viewSize, copy, quad, next) {
+
+goog.scope(function () {
+
+  var ls = libjs.shader;
+
+
+  
+  libjs.gol.draw = function(gl, viewSize, copy, quad, next) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindTexture(gl.TEXTURE_2D, next);
     gl.viewport(0, 0, viewSize[0], viewSize[1]);
@@ -22,7 +28,9 @@ libjs.gol = function () {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
-  function tick(gl, step, stateSize, program, quad, textures) {
+
+
+  libjs.gol.tick = function(gl, step, stateSize, program, quad, textures) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, step);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures.prev, 0);
     gl.bindTexture(gl.TEXTURE_2D, textures.next);
@@ -45,37 +53,44 @@ libjs.gol = function () {
     textures.next = textures.prev;
     textures.prev = tmp;
   }  
-  
-  function start() {
+
+
+
+  libjs.gol.prepare = function() {
     var canvas = document.getElementById("shader-canvas");
     var page = document.getElementById ("shader-page");
     canvas.width = page.offsetWidth;
     canvas.height = page.offsetHeight;
-    var w = libjs.shader.minSquare(canvas.width > canvas.height ? canvas.width : canvas.height);
+    var w = ls.minSquare(canvas.width > canvas.height ? canvas.width : canvas.height);
     var h = w;
     var gl = canvas.getContext("webgl");
     var scale = 2;
     var viewSize = [w, h];
     var stateSize = [w / scale, h / scale];    
-    var gol = libjs.shader.createProgram(gl, "quad", "gol");
-    var copy = libjs.shader.createProgram(gl, "quad", "copy");
-    var quad = libjs.shader.createQuadBuffer(gl);
+    var gol = ls.createProgram(gl, "quad", "gol");
+    var copy = ls.createProgram(gl, "quad", "copy");
+    var quad = ls.createQuadBuffer(gl);
     var step = gl.createFramebuffer();
-    var noise = libjs.shader.createNoise(stateSize);
-    var pixelNoise = libjs.shader.binaryPixelData(noise);
+    var noise = ls.createNoise(stateSize);
+    var pixelNoise = ls.binaryPixelData(noise);
     var textures = {
-      next: libjs.shader.createTexture(gl, stateSize),
-      prev: libjs.shader.createTexture(gl, stateSize)
+      next: ls.createTexture(gl, stateSize),
+      prev: ls.createTexture(gl, stateSize)
     }    
     
-    libjs.shader.setTexture(gl, textures.next, pixelNoise, stateSize);
-    draw(gl, viewSize, copy, quad, textures.next);
+    ls.setTexture(gl, textures.next, pixelNoise, stateSize);
+    libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
 
     return function() {
-      tick(gl, step, stateSize, gol, quad, textures);
-      draw(gl, viewSize, copy, quad, textures.next);
+      libjs.gol.tick(gl, step, stateSize, gol, quad, textures);
+      libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
     };
   }
 
-  return libjs.shader.createLifeCycle(start, 30);
-}();
+
+
+  libjs.gol.lifecycle = ls.createLifeCycle(libjs.gol.prepare, 30);
+  libjs.gol.start = libjs.gol.lifecycle.start;
+  libjs.gol.stop = libjs.gol.lifecycle.stop;
+
+});

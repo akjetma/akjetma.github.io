@@ -90,17 +90,14 @@ libjs.shader.setTexture = function(gl, texture, data, size) {
   gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, size[0], size[1], gl.RGBA, gl.UNSIGNED_BYTE, data);
 }
 
-libjs.shader.stopAnimation = function(animate) {
-  clearInterval(animate);
-  return null;
-}
 
-libjs.shader.createLifeCycle = function(start, rate) {
+
+libjs.shader.createLifeCycle = function(prepare, rate) {
   var animate = null;
   
   return {
     start: function() {
-      var tick = start();
+      var tick = prepare();
       animate = setInterval(tick, rate);
     },
     stop: function() {
