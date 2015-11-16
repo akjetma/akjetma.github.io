@@ -19,11 +19,11 @@ goog.scope(function () {
     gl.bindBuffer(gl.ARRAY_BUFFER, quad);
     gl.vertexAttribPointer(quadAttr, 2, gl.FLOAT, false, 0, 0);
 
-    var stateAttr = gl.getUniformLocation(program, 'state');
-    gl.uniform1i(stateAttr, 0);
+    var stateUnif = gl.getUniformLocation(program, 'state');
+    gl.uniform1i(stateUnif, 0);
 
-    var scaleAttr = gl.getUniformLocation(program, 'scale');
-    gl.uniform2fv(scaleAttr, size);
+    var scaleUnif = gl.getUniformLocation(program, 'scale');
+    gl.uniform2fv(scaleUnif, size);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 

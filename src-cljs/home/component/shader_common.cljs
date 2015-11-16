@@ -10,13 +10,13 @@
     :dangerouslySetInnerHTML {:__html body}}])
 
 (defn quad-shader []
-  [shader "vertex" "quad" (macros/slurp "resources/public/js/shader/quad.c")])
+  [shader "vertex" "quad" (macros/slurp "resources/public/gl/quad.c")])
 
 (defn copy-shader []
-  [shader "fragment" "copy" (macros/slurp "resources/public/js/shader/copy.c")])
+  [shader "fragment" "copy" (macros/slurp "resources/public/gl/copy.c")])
 
 (defn gol-shader []
-  [shader "fragment" "gol" (macros/slurp "resources/public/js/shader/gol.c")])
+  [shader "fragment" "gol" (macros/slurp "resources/public/gl/gol.c")])
 
 (defn make-render
   ([prefix shaders] (make-render prefix shaders nil))
