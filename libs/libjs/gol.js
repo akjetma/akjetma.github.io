@@ -8,35 +8,12 @@ goog.scope(function () {
   var ls = libjs.shader;
 
 
-  
-  libjs.gol.draw = function(gl, viewSize, copy, quad, next) {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  libjs.gol.put = function(gl, program, quad, size, next) {
     gl.bindTexture(gl.TEXTURE_2D, next);
-    gl.viewport(0, 0, viewSize[0], viewSize[1]);
-    gl.useProgram(copy);
-
-    var quadAttr = gl.getAttribLocation(copy, 'quad');
-    gl.enableVertexAttribArray(quadAttr);
-    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-    gl.vertexAttribPointer(quadAttr, 2, gl.FLOAT, false, 0, 0);
-
-    var stateAttr = gl.getUniformLocation(copy, 'state');
-    gl.uniform1i(stateAttr, 0);
-
-    var scaleAttr = gl.getUniformLocation(copy, 'scale');
-    gl.uniform2fv(scaleAttr, viewSize);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }
-
-
-
-  libjs.gol.tick = function(gl, step, stateSize, program, quad, textures) {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, step);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures.prev, 0);
-    gl.bindTexture(gl.TEXTURE_2D, textures.next);
-    gl.viewport(0, 0, stateSize[0], stateSize[1]);
+    gl.viewport(0, 0, size[0], size[1]);
     gl.useProgram(program);
-
+    
     var quadAttr = gl.getAttribLocation(program, 'quad');
     gl.enableVertexAttribArray(quadAttr);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad);
@@ -46,12 +23,32 @@ goog.scope(function () {
     gl.uniform1i(stateAttr, 0);
 
     var scaleAttr = gl.getUniformLocation(program, 'scale');
-    gl.uniform2fv(scaleAttr, stateSize);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);    
+    gl.uniform2fv(scaleAttr, size);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
 
+
+  
+  libjs.gol.draw = function(gl, viewSize, copy, quad, next) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);    
+    libjs.gol.put(gl, copy, quad, viewSize, next);
+  }
+
+
+
+  libjs.gol.flip = function(textures) {
     var tmp = textures.next;
     textures.next = textures.prev;
     textures.prev = tmp;
+  }
+
+
+  
+  libjs.gol.tick = function(gl, step, stateSize, life, quad, textures) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, step);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures.prev, 0);
+    libjs.gol.put(gl, life, quad, stateSize, textures.next);
+    libjs.gol.flip(textures);
   }  
 
 
@@ -67,7 +64,7 @@ goog.scope(function () {
     var scale = 2;
     var viewSize = [w, h];
     var stateSize = [w / scale, h / scale];    
-    var gol = ls.createProgram(gl, "quad", "gol");
+    var life = ls.createProgram(gl, "quad", "gol");
     var copy = ls.createProgram(gl, "quad", "copy");
     var quad = ls.createQuadBuffer(gl);
     var step = gl.createFramebuffer();
@@ -82,7 +79,7 @@ goog.scope(function () {
     libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
 
     return function() {
-      libjs.gol.tick(gl, step, stateSize, gol, quad, textures);
+      libjs.gol.tick(gl, step, stateSize, life, quad, textures);
       libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
     };
   }
