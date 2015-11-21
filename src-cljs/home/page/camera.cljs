@@ -1,16 +1,10 @@
 (ns home.page.camera
-  (:require [reagent.core :as reagent]))
+  (:require [reagent.core :as reagent]
+            [home.util :as util]))
 
 (defonce animate (atom nil))
 (def framerate (/ 1000 60))
 (def buffer-ct 20)
-
-(defn set-gum?
-  []
-  (when-let [gum (some (partial aget js/navigator)
-                       ["getUserMedia" "webkitGetUserMedia" "mozGetUserMedia" "msGetUserMedia"])]
-    (set! (.-getUserMedia js/navigator) gum)
-    true))
 
 (defn frame-dim
   [buff-width buff-height h-thick v-thick n]
@@ -104,7 +98,7 @@
   (let [video (.querySelector js/document "#input")
         buff-array (.querySelector js/document "#buffer")
         output (.querySelector js/document "#output")]
-    (if (set-gum?)
+    (if (util/setgum)
       (.getUserMedia
        js/navigator #js {:video true}
        (partial got-media video buff-array output)

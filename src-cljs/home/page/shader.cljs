@@ -1,6 +1,5 @@
 (ns home.page.shader
-  (:require [reagent.core :as reagent]
-            [libjs.gol :as gol]
+  (:require [libjs.gol :as gol]
             [home.component.shader-common :as sc]))
  
 (def page

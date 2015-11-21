@@ -18,12 +18,15 @@
 (defn gol-shader []
   [shader "fragment" "gol" (macros/slurp "resources/public/gl/gol.c")])
 
+(defn face-shader []
+  [shader "fragment" "face" (macros/slurp "resources/public/gl/face.c")])
+
 (defn make-render
   ([prefix shaders] (make-render prefix shaders nil))
   ([prefix shaders body]
    (fn shader-render
      [_]
-     [:div {:id (str prefix "-page")}
+     [:div.shader-page {:id (str prefix "-page")}
       [:canvas {:id (str prefix "-canvas")}]
       (map-indexed
        (fn [i shader] ^{:key i} [shader])

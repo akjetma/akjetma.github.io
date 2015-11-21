@@ -44,16 +44,16 @@ libjs.shader.createBuffer = function(gl, data) {
 
 
 
-libjs.shader.createNoise = function(size) {
+libjs.shader.createNoise = function(size, density) {
   var n = size[0] * size[1];
   var data = new Uint8Array(n);
-  for (var i=0; i<n; i++) data[i] = Math.random() < 0.5 ? 0 : 1;
+  for (var i=0; i<n; i++) data[i] = Math.random() < density ? 1 : 0;
   return data;
 }
 
 
 
-libjs.shader.createTexture = function(gl, size) {
+libjs.shader.createTexture = function(gl) {
   var tex = gl.createTexture();        
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -61,7 +61,33 @@ libjs.shader.createTexture = function(gl, size) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size[0], size[1], 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  return tex;
+}
+
+
+
+libjs.shader.videoTex = function(gl) {
+  var tex = gl.createTexture();        
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  libjs.shader.texImage2D(gl, null);
+  return tex;
+}
+
+
+
+libjs.shader.createTex = function(gl, size) {
+  var tex = libjs.shader.createTexture(gl);
+  if (arguments.length == 1) {
+    libjs.shader.texImage2D(gl, null);
+  } else {
+    libjs.shader.texImage2D(gl, null, size);
+  }
   return tex;
 }
 
@@ -85,9 +111,18 @@ libjs.shader.binaryPixelData = function(states) {
 
 
 
-libjs.shader.setTexture = function(gl, texture, data, size) {
-  gl.bindTexture(gl.TEXTURE_2D, texture);
+libjs.shader.texSubImage2D = function(gl, data, size) {
   gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, size[0], size[1], gl.RGBA, gl.UNSIGNED_BYTE, data);
+}
+
+
+
+libjs.shader.texImage2D = function(gl, data, size) {
+  if (arguments.length == 2) {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data);
+  } else {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size[0], size[1], 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+  }
 }
 
 

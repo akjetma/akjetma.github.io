@@ -68,14 +68,15 @@ goog.scope(function () {
     var copy = ls.createProgram(gl, "quad", "copy");
     var quad = ls.createQuadBuffer(gl);
     var step = gl.createFramebuffer();
-    var noise = ls.createNoise(stateSize);
+    var noise = ls.createNoise(stateSize, 0.2);
     var pixelNoise = ls.binaryPixelData(noise);
     var textures = {
-      next: ls.createTexture(gl, stateSize),
-      prev: ls.createTexture(gl, stateSize)
+      next: ls.createTex(gl, stateSize),
+      prev: ls.createTex(gl, stateSize)
     }    
-    
-    ls.setTexture(gl, textures.next, pixelNoise, stateSize);
+
+    gl.bindTexture(gl.TEXTURE_2D, textures.next);
+    ls.texSubImage2D(gl, pixelNoise, stateSize);
     libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
 
     return function() {
