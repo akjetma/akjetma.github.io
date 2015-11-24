@@ -1,7 +1,7 @@
 (ns home.page.shader-2
-  (:require [libjs.face :as face]
+  (:require [jsh.face :as face]
             [home.component.shader-common :as sc]))
- 
+  
 (def page
   (sc/make-page
    "shader-2" face/start face/stop

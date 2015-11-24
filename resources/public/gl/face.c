@@ -56,12 +56,10 @@ void main() {
   int sum = getSum();
   float edge = detectEdge();
   float light = intensity();
+  float current = float(getState(vec2(0.0, 0.0)));
   
-  if (sum == 3 || edge >= 0.7 || light >= 1.7) {
+  if (sum == 3 || (current == 1.0 && (sum == 2 || light >= 1.2))) {
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  } else if (sum == 2) {
-    float current = float(getState(vec2(0.0, 0.0)));
-    gl_FragColor = vec4(current, current, current, 1.0);  
   } else {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
   }

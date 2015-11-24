@@ -1,5 +1,5 @@
 (ns home.page.shader
-  (:require [libjs.gol :as gol]
+  (:require [jsh.gol :as gol]
             [home.component.shader-common :as sc]))
  
 (def page

@@ -1,15 +1,15 @@
-goog.provide("libjs.gol");
+goog.provide("jsh.gol");
 
-goog.require("libjs.shader");
+goog.require("jsh.shader");
 
 
 goog.scope(function () {
 
-  var ls = libjs.shader;
+  var ls = jsh.shader;
 
 
 
-  libjs.gol.put = function(gl, program, quad, size, next) {
+  jsh.gol.put = function(gl, program, quad, size, next) {
     gl.bindTexture(gl.TEXTURE_2D, next);
     gl.viewport(0, 0, size[0], size[1]);
     gl.useProgram(program);
@@ -29,14 +29,14 @@ goog.scope(function () {
 
 
   
-  libjs.gol.draw = function(gl, viewSize, copy, quad, next) {
+  jsh.gol.draw = function(gl, viewSize, copy, quad, next) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);    
-    libjs.gol.put(gl, copy, quad, viewSize, next);
+    jsh.gol.put(gl, copy, quad, viewSize, next);
   }
 
 
 
-  libjs.gol.flip = function(textures) {
+  jsh.gol.flip = function(textures) {
     var tmp = textures.next;
     textures.next = textures.prev;
     textures.prev = tmp;
@@ -44,16 +44,16 @@ goog.scope(function () {
 
 
   
-  libjs.gol.tick = function(gl, step, stateSize, life, quad, textures) {
+  jsh.gol.tick = function(gl, step, stateSize, life, quad, textures) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, step);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures.prev, 0);
-    libjs.gol.put(gl, life, quad, stateSize, textures.next);
-    libjs.gol.flip(textures);
+    jsh.gol.put(gl, life, quad, stateSize, textures.next);
+    jsh.gol.flip(textures);
   }  
 
 
 
-  libjs.gol.prepare = function() {
+  jsh.gol.prepare = function() {
     var canvas = document.getElementById("shader-canvas");
     var page = document.getElementById ("shader-page");
     canvas.width = page.offsetWidth;
@@ -77,18 +77,18 @@ goog.scope(function () {
 
     gl.bindTexture(gl.TEXTURE_2D, textures.next);
     ls.texSubImage2D(gl, pixelNoise, stateSize);
-    libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
+    jsh.gol.draw(gl, viewSize, copy, quad, textures.next);
 
     return function() {
-      libjs.gol.tick(gl, step, stateSize, life, quad, textures);
-      libjs.gol.draw(gl, viewSize, copy, quad, textures.next);
+      jsh.gol.tick(gl, step, stateSize, life, quad, textures);
+      jsh.gol.draw(gl, viewSize, copy, quad, textures.next);
     };
   }
 
 
 
-  libjs.gol.lifecycle = ls.createLifeCycle(libjs.gol.prepare, 30);
-  libjs.gol.start = libjs.gol.lifecycle.start;
-  libjs.gol.stop = libjs.gol.lifecycle.stop;
+  jsh.gol.lifecycle = ls.createLifeCycle(jsh.gol.prepare, 30);
+  jsh.gol.start = jsh.gol.lifecycle.start;
+  jsh.gol.stop = jsh.gol.lifecycle.stop;
 
 });
