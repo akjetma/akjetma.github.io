@@ -38,7 +38,7 @@ goog.scope(function () {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, textures.video);
     ls.texImage2D(gl, video);
-
+    
     var videoUnif = gl.getUniformLocation(life, 'video');
     gl.uniform1i(videoUnif, 1);
 
@@ -85,9 +85,9 @@ goog.scope(function () {
       var noise = ls.createNoise(stateSize, 0.50);
       var pixelNoise = ls.binaryPixelData(noise);
       var textures = {
-        next: ls.createTex(gl, stateSize),
-        prev: ls.createTex(gl, stateSize),
-        video: ls.videoTex(gl)
+        next: ls.createTexture(gl, stateSize),
+        prev: ls.createTexture(gl, stateSize),
+        video: ls.createVideoTexture(gl)
       }
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, textures.next);
