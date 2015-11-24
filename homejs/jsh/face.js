@@ -74,10 +74,10 @@ goog.scope(function () {
       video.width = w;
       video.height = h;
       var gl = output.getContext("webgl");
-      var scale = 4;
+      var scale = 2;
       var viewSize = [w, h];
       var stateSize = [w / scale, h / scale];
-      var videoSize = [video.videoWidth / 2, video.videoHeight / 2];
+      var videoSize = [video.videoWidth, video.videoHeight];
       var life = ls.createProgram(gl, "quad", "face");
       var copy = ls.createProgram(gl, "quad", "copy");
       var quad = ls.createQuadBuffer(gl);
