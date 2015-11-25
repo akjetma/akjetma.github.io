@@ -1,7 +1,7 @@
 (ns home.component.shader-common
   (:require [reagent.core :as reagent])
   (:require-macros [home.macros :as macros]))
-       
+             
 (defn shader
   [type id body]
   [:script

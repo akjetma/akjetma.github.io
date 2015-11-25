@@ -57,9 +57,9 @@ void main() {
   float edge = detectEdge();
   float light = intensity();
   
-  if (sum == 3 || edge >= 0.3) {
+  if (sum == 3) {
     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  } else if (sum == 2) {
+  } else if (sum == 2 || edge >= 0.3) {
     float current = float(getState(vec2(0.0, 0.0)));
     gl_FragColor = vec4(current, current, current, 1.0);  
   } else {

@@ -82,7 +82,7 @@ goog.scope(function () {
       var copy = ls.createProgram(gl, "quad", "copy");
       var quad = ls.createQuadBuffer(gl);
       var step = gl.createFramebuffer();
-      var noise = ls.createNoise(stateSize, 0.50);
+      var noise = ls.createNoise(stateSize, 0.05);
       var pixelNoise = ls.binaryPixelData(noise);
       var textures = {
         next: ls.createTexture(gl, stateSize),
