@@ -8,10 +8,11 @@
             [home.page.camera :as camera]
             [home.page.gol :as gol]
             [home.page.fol :as fol]
+            [home.page.photos :as photos]
             [home.page.unsupported :as unsupported]))
 
 (def current-things
-  [:sorter :matrix :cube :camera :game-of-life :face-of-life])
+  [:sorter :matrix :cube :camera :game-of-life :face-of-life :photos])
 
 (def page-map
   {:home home/page
@@ -22,6 +23,7 @@
    :camera camera/page
    :game-of-life gol/page
    :face-of-life fol/page
+   :photos photos/page
    :unsupported unsupported/page})
 
 (defn nav
@@ -41,4 +43,5 @@
   (defroute camera-path "/camera" [] (nav state :camera))
   (defroute gol-path "/game-of-life" [] (nav state :game-of-life))
   (defroute fol-path "/face-of-life" [] (nav state :face-of-life))
+  (defroute photos-path "/photos" [] (nav state :photos))
   (defroute etc-path "*" [] (nav state :home)))
