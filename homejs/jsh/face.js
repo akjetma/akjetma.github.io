@@ -1,7 +1,6 @@
-goog.provide("jsh.face");
-
-goog.require("jsh.shader");
-goog.require("home.util");
+goog.provide('jsh.face');
+goog.require('jsh.shader');
+goog.require('home.util');
 
 goog.scope(function () {
   var ls = jsh.shader;
@@ -22,13 +21,13 @@ goog.scope(function () {
     var scaleUnif = gl.getUniformLocation(program, 'scale');
     gl.uniform2fv(scaleUnif, size);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }
+  };
 
   jsh.face.flip = function(textures) {
     var tmp = textures.next;
     textures.next = textures.prev;
     textures.prev = tmp;
-  }
+  };
   
   jsh.face.tick = function(gl, step, stateSize, life, quad, textures, video, videoSize) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, step);
@@ -46,19 +45,19 @@ goog.scope(function () {
     gl.uniform2fv(videoScaleUnif, videoSize);
     jsh.face.put(gl, life, quad, stateSize, textures.next);
     jsh.face.flip(textures);
-  }  
+  }; 
   
   jsh.face.draw = function(gl, viewSize, copy, quad, next) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     jsh.face.put(gl, copy, quad, viewSize, next);
-  }
+  };
   
   jsh.face.animate = null;
 
   jsh.face.stop = function() {
     clearInterval(jsh.face.animate);
     jsh.face.animate = null;
-  }
+  };
 
   jsh.face.gotStream = function(stream) {      
     var video = document.createElement("video");
@@ -88,7 +87,7 @@ goog.scope(function () {
         next: ls.createTexture(gl, stateSize),
         prev: ls.createTexture(gl, stateSize),
         video: ls.createVideoTexture(gl)
-      }
+      };
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, textures.next);
       ls.texSubImage2D(gl, pixelNoise, stateSize);
@@ -98,16 +97,16 @@ goog.scope(function () {
         jsh.face.draw(gl, viewSize, copy, quad, textures.next);
       }, 30);
     });    
-  }
+  };
 
   jsh.face.didntGetStream = function(error) {
     console.log("didn't get the stream", error);
-  }
+  };
   
   jsh.face.start = function() {
     home.util.setgum();        
     
     navigator.getUserMedia({video: true}, jsh.face.gotStream, jsh.face.didntGetStream);        
-  }
+  };
   
 });

@@ -1,13 +1,9 @@
-goog.provide("jsh.gol");
-
-goog.require("jsh.shader");
-
+goog.provide('jsh.gol');
+goog.require('jsh.shader');
 
 goog.scope(function () {
 
   var ls = jsh.shader;
-
-
 
   jsh.gol.put = function(gl, program, quad, size, next) {
     gl.bindTexture(gl.TEXTURE_2D, next);
@@ -25,33 +21,25 @@ goog.scope(function () {
     var scaleUnif = gl.getUniformLocation(program, 'scale');
     gl.uniform2fv(scaleUnif, size);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }
-
-
+  };
   
   jsh.gol.draw = function(gl, viewSize, copy, quad, next) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);    
     jsh.gol.put(gl, copy, quad, viewSize, next);
-  }
-
-
+  };
 
   jsh.gol.flip = function(textures) {
     var tmp = textures.next;
     textures.next = textures.prev;
     textures.prev = tmp;
-  }
+  };
 
-
-  
   jsh.gol.tick = function(gl, step, stateSize, life, quad, textures) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, step);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures.prev, 0);
     jsh.gol.put(gl, life, quad, stateSize, textures.next);
     jsh.gol.flip(textures);
-  }  
-
-
+  };
 
   jsh.gol.prepare = function() {
     var canvas = document.getElementById("shader-canvas");
@@ -73,7 +61,7 @@ goog.scope(function () {
     var textures = {
       next: ls.createTexture(gl, stateSize),
       prev: ls.createTexture(gl, stateSize)
-    }    
+    };
 
     gl.bindTexture(gl.TEXTURE_2D, textures.next);
     ls.texSubImage2D(gl, pixelNoise, stateSize);
@@ -83,9 +71,7 @@ goog.scope(function () {
       jsh.gol.tick(gl, step, stateSize, life, quad, textures);
       jsh.gol.draw(gl, viewSize, copy, quad, textures.next);
     };
-  }
-
-
+  };
 
   jsh.gol.lifecycle = ls.createLifeCycle(jsh.gol.prepare, 30);
   jsh.gol.start = jsh.gol.lifecycle.start;

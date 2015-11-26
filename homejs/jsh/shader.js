@@ -1,15 +1,11 @@
-goog.provide("jsh.shader");
-
-
+goog.provide('jsh.shader');
 
 jsh.shader.createShader = function(gl, type, id) {
   var shader = gl.createShader(type);
   gl.shaderSource(shader, document.getElementById(id).text);
   gl.compileShader(shader);
   return shader;
-}
-
-
+};
 
 jsh.shader.createProgram = function(gl, vID, fID) {
   var program = gl.createProgram();
@@ -19,24 +15,18 @@ jsh.shader.createProgram = function(gl, vID, fID) {
   gl.attachShader(program, fShader);
   gl.linkProgram(program);
   return program;
-}
-
-
+};
 
 jsh.shader.setWrapScale = function(gl, wrap, scale) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, scale);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, scale);
-}
-
-
+};
 
 jsh.shader.texSubImage2D = function(gl, data, size) {
   gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, size[0], size[1], gl.RGBA, gl.UNSIGNED_BYTE, data);
-}
-
-
+};
 
 jsh.shader.texImage2D = function(gl, data, size) {  
   if (arguments.length == 2) {
@@ -44,9 +34,7 @@ jsh.shader.texImage2D = function(gl, data, size) {
   } else {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size[0], size[1], 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
   }
-}
-
-
+};
 
 jsh.shader.createVideoTexture = function(gl) {
   var tex = gl.createTexture();        
@@ -56,9 +44,7 @@ jsh.shader.createVideoTexture = function(gl) {
   jsh.shader.texImage2D(gl, null);
   gl.bindTexture(gl.TEXTURE_2D, null);
   return tex;
-}
-
-
+};
 
 jsh.shader.createTexture = function(gl, size) {
   var tex = gl.createTexture();        
@@ -67,9 +53,7 @@ jsh.shader.createTexture = function(gl, size) {
   jsh.shader.texImage2D(gl, null, size);
   gl.bindTexture(gl.TEXTURE_2D, null);
   return tex;
-}
-
-
+};
 
 jsh.shader.createQuadBuffer = function(gl) {
   var buffer = gl.createBuffer();
@@ -77,30 +61,24 @@ jsh.shader.createQuadBuffer = function(gl) {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   return buffer;
-}
-
-
+};
 
 jsh.shader.minSquare = function(size) {
   var pow = 2;
   var square = Math.pow(2, pow);
-  while (square - size < 0){
+  while (square - size < 0) {
     pow++;
     square = Math.pow(2, pow);
   }
   return square;
-}
-
-
+};
 
 jsh.shader.createNoise = function(size, density) {
   var n = size[0] * size[1];
   var data = new Uint8Array(n);
   for (var i=0; i<n; i++) data[i] = Math.random() < density ? 1 : 0;
   return data;
-}
-
-
+};
 
 jsh.shader.binaryPixelData = function(states) {
   var rgba = new Uint8Array(states.length * 4);
@@ -110,9 +88,7 @@ jsh.shader.binaryPixelData = function(states) {
     rgba[j+3] = 255;
   }
   return rgba;
-}
-
-
+};
 
 jsh.shader.createLifeCycle = function(prepare, rate) {
   var animate = null;
@@ -127,4 +103,4 @@ jsh.shader.createLifeCycle = function(prepare, rate) {
       animate = null;
     }
   };
-}
+};
