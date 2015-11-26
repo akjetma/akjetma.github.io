@@ -6,12 +6,12 @@
             [home.page.cube :as cube]
             [home.page.signal :as signal]
             [home.page.camera :as camera]
-            [home.page.shader :as shader]
-            [home.page.shader-2 :as shader-2]
+            [home.page.gol :as gol]
+            [home.page.fol :as fol]
             [home.page.unsupported :as unsupported]))
 
 (def current-things
-  [:sorter :matrix :cube :camera :shader :shader-2])
+  [:sorter :matrix :cube :camera :game-of-life :face-of-life])
 
 (def page-map
   {:home home/page
@@ -20,8 +20,8 @@
    :cube cube/page
    :signal signal/page
    :camera camera/page
-   :shader shader/page
-   :shader-2 shader-2/page
+   :game-of-life gol/page
+   :face-of-life fol/page
    :unsupported unsupported/page})
 
 (defn nav
@@ -39,6 +39,6 @@
   (defroute cube-path "/cube" [] (nav state :cube))
   (defroute signal-path "/signal" [] (nav state :signal))
   (defroute camera-path "/camera" [] (nav state :camera))
-  (defroute shader-path "/shader" [] (nav state :shader))
-  (defroute shader-2-path "/shader-2" [] (nav state :shader-2))
+  (defroute gol-path "/game-of-life" [] (nav state :game-of-life))
+  (defroute fol-path "/face-of-life" [] (nav state :face-of-life))
   (defroute etc-path "*" [] (nav state :home)))

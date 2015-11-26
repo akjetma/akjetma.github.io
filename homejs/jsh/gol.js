@@ -42,8 +42,8 @@ goog.scope(function () {
   };
 
   jsh.gol.prepare = function() {
-    var canvas = document.getElementById("shader-canvas");
-    var page = document.getElementById ("shader-page");
+    var canvas = document.getElementById("gol-canvas");
+    var page = document.getElementById ("gol-page");
     canvas.width = page.offsetWidth;
     canvas.height = page.offsetHeight;
     var w = ls.minSquare(canvas.width > canvas.height ? canvas.width : canvas.height);

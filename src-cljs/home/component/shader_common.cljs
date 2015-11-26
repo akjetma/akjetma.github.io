@@ -18,8 +18,8 @@
 (defn gol-shader []
   [shader "fragment" "gol" (macros/slurp "resources/public/gl/gol.c")])
 
-(defn face-shader []
-  [shader "fragment" "face" (macros/slurp "resources/public/gl/face.c")])
+(defn fol-shader []
+  [shader "fragment" "fol" (macros/slurp "resources/public/gl/fol.c")])
 
 (defn make-render
   ([prefix shaders] (make-render prefix shaders nil))
