@@ -13,16 +13,14 @@
   [state]
   (let [possible (:things @state)]
     [:div#bar
-     [:div.contents
-      [:h2.bar-item [:a {:href "/#/home"} "adam jetmalani"]]
-      [:div.thing-list.bar-item
-       [:h4 "things"]
+     [:div.contents      
+      [:div.thing-list.bar-item       
        [:div.list
         (for [place routes/current-things]
           ^{:key place}
           [:div.thing (when-not (some #{place} possible) {:class "impossible"})
            [:a {:href (str "/#/" (name place))}
-            (str (name place) " thing")]])]]
+            (name place)]])]]
       [:div.social.bar-item
        (for [[social link] social-map]
          ^{:key social}
