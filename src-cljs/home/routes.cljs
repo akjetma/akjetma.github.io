@@ -12,7 +12,7 @@
             [home.page.unsupported :as unsupported]))
 
 (def current-things
-  [:sorter :matrix :cube :camera :game-of-life :face-of-life :photos])
+  [:sorter :matrix :cube :camera :game-of-life :face-of-life])
 
 (def page-map
   {:home home/page
