@@ -6,7 +6,8 @@
             [home.routes :as routes]
             [home.component.app :as app]
             [home.support :as support])
-  (:import goog.History))
+  (:import goog.History
+           goog.Uri))
 
 (defn navigate
   [state token]
@@ -38,7 +39,8 @@
    [app/app state]
    (.-body js/document)))
 
-(defonce load
+(defn load*
+  []
   (let [state (reagent/atom {})
         history (History.)]
     (enable-console-print!)
@@ -49,3 +51,15 @@
     (fn figwheel-reload-fn
       []
       (navigate state (.getToken history)))))
+
+(defonce load
+  (let [uri (Uri. (-> js/window .-location .-href))
+        domain (.getDomain uri)
+        scheme (.getScheme uri)]
+    (if (and (not= "localhost" domain)
+             (not= "https" scheme))
+      (set! (-> js/winow .-location .-href)
+            (.setScheme uri "https"))
+      (load*))))
+
+ 
