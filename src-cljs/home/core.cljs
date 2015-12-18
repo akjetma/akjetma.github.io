@@ -58,7 +58,7 @@
         scheme (.getScheme uri)]
     (if (and (not= "localhost" domain)
              (not= "https" scheme))
-      (set! (-> js/winow .-location .-href)
+      (set! (-> js/window .-location .-href)
             (.setScheme uri "https"))
       (load*))))
 
