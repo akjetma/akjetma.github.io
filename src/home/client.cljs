@@ -1,4 +1,4 @@
-(ns home.core
+(ns home.client
   (:require [reagent.core :as reagent]
             [secretary.core :as secretary]
             [goog.events :as events]
@@ -14,12 +14,16 @@
   (swap! state update :nav-count inc)
   (secretary/dispatch! token))
 
+(defn asset-prefix []
+  (or (.-ASSET_PREFIX js/window) ""))
+
 (defn initialize-state!
   [state]
   (let [browser (support/browser-type)]
     (reset! 
      state 
      {:browser browser
+      :asset-prefix (asset-prefix)
       :things (get support/browser-things browser)
       :show-inspector? false
       :initialized true
@@ -52,14 +56,18 @@
       []
       (navigate state (.getToken history)))))
 
+(defn reload-https
+  [uri]
+  (set! (-> js/window .-location .-href) 
+        (.setScheme uri "https")))
+
 (defonce load
   (let [uri (Uri. (-> js/window .-location .-href))
         domain (.getDomain uri)
-        scheme (.getScheme uri)]
-    (if (and (not= "localhost" domain)
-             (not= "https" scheme))
-      (set! (-> js/window .-location .-href)
-            (.setScheme uri "https"))
+        scheme (.getScheme uri)
+        reset? (and (not= "localhost" domain) (not= "https" scheme))]
+    (if reset?
+      (reload-https uri)
       (load*))))
 
  
