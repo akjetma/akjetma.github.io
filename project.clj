@@ -4,6 +4,7 @@
                  [http-kit "2.1.18"]
                  [polaris "0.0.15"]
                  [ring "1.4.0"]
+                 [ring-cors "0.1.7"]
                  [enlive "1.1.6"]
                  [org.clojure/data.json "0.2.6"]                 
                  [org.clojure/math.numeric-tower "0.0.4"]

@@ -5,6 +5,7 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.cors :refer [wrap-cors]]
             [clojure.data.json :as json]
             [home.server.wordcloud :as cloud]))
 
@@ -32,7 +33,9 @@
       polaris/router
       (wrap-resource "public")
       wrap-content-type
-      wrap-params))
+      wrap-params
+      (wrap-cors :access-control-allow-origin [#"http://localhost:5000" #"https://akjetma.github.io"]
+                 :access-control-allow-methods [:get :put :post :delete])))
 
 (defn stop-server
   []
