@@ -43,5 +43,10 @@
 (defn start-server
   []
   (stop-server)
-  (let [server* (server/run-server #'router {:port 8080})]
+  (let [port (Integer/parseInt (get (System/getenv) "PORT" "5000"))
+        server* (server/run-server #'router {:port port})]
     (reset! server server*)))
+
+(defn -main
+  []
+  (start-server))
