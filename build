@@ -1,0 +1,6 @@
+#!/bin/bash 
+
+echo "building things"
+sh ./compile-cljs
+sh ./compile-less
+echo "things built"
