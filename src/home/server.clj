@@ -38,6 +38,7 @@
   []
   (when-not (nil? @server)
     (@server :timeout 100)
+    (println "server stopped")
     (reset! server nil)))
 
 (defn start-server
@@ -45,6 +46,7 @@
   (stop-server)
   (let [port (Integer/parseInt (get (System/getenv) "PORT" "5000"))
         server* (server/run-server #'router {:port port})]
+    (println "server started on port" port)
     (reset! server server*)))
 
 (defn -main
