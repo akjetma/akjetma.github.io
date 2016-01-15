@@ -21,9 +21,6 @@
 (defn fol-shader []
   [shader "fragment" "fol" (macros/slurp "resources/public/gl/fol.c")])
 
-(defn photos-shader []
-  [shader "fragment" "photos" (macros/slurp "resources/public/gl/photos.c")])
-
 (defn make-render
   ([prefix shaders] (make-render prefix shaders nil))
   ([prefix shaders body]

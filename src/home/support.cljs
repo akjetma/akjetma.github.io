@@ -1,11 +1,14 @@
 (ns home.support)
 
+(def everything
+  [:home :sorter :matrix :cube :camera :game-of-life :face-of-life :wordcloud])
+
 (def browser-things
-  {:chrome [:home :sorter :matrix :cube :camera :game-of-life :face-of-life :photos]
-   :opera [:home :sorter :matrix :cube :camera :game-of-life :face-of-life :photos]
-   :safari [:home :sorter :matrix :cube :game-of-life :photos]
-   :firefox [:home :matrix :sorter :camera :shader :game-of-life :face-of-life :photos]
-   :other [:home :sorter :matrix :cube :camera :game-of-life :face-of-life :photos]})
+  {:chrome everything
+   :opera everything
+   :safari (remove #{:camera :face-of-life} everything)
+   :firefox everything
+   :other everything})
 
 (defn browser-type
   []

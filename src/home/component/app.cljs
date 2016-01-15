@@ -1,5 +1,6 @@
 (ns home.component.app
-  (:require [home.routes :as routes]))
+  (:require [home.routes :as routes]
+            [home.support :as support]))
 
 (def social-map
   {"twitter" "http://twitter.com/_magnusmagnus"
@@ -16,7 +17,7 @@
      [:div.contents      
       [:div.thing-list.bar-item       
        [:div.list
-        (for [place routes/current-things]
+        (for [place support/everything]
           ^{:key place}
           [:div.thing (when-not (some #{place} possible) {:class "impossible"})
            [:a {:href (str "/#/" (name place))}

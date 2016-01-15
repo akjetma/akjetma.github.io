@@ -4,26 +4,21 @@
             [home.page.sorter :as sorter]
             [home.page.matrix :as matrix]
             [home.page.cube :as cube]
-            [home.page.signal :as signal]
             [home.page.camera :as camera]
             [home.page.gol :as gol]
             [home.page.fol :as fol]
-            [home.page.photos :as photos]
+            [home.page.wordcloud :as wordcloud]
             [home.page.unsupported :as unsupported]))
-
-(def current-things
-  [:sorter :matrix :cube :camera :game-of-life :face-of-life])
 
 (def page-map
   {:home home/page
    :sorter sorter/page
    :matrix matrix/page
    :cube cube/page
-   :signal signal/page
    :camera camera/page
    :game-of-life gol/page
    :face-of-life fol/page
-   :photos photos/page
+   :wordcloud wordcloud/page
    :unsupported unsupported/page})
 
 (defn nav
@@ -34,14 +29,13 @@
 
 (defn define-routes!
   [state]
-  (defroute landing-path "/" [] (nav state (rand-nth (remove #{:home :camera} (:things @state)))))
+  (defroute landing-path "/" [] (nav state (rand-nth (:things @state))))
   (defroute home-path "/home" [] (nav state :home))
   (defroute sorter-path "/sorter" [] (nav state :sorter))
   (defroute matrix-path "/matrix" [] (nav state :matrix))
   (defroute cube-path "/cube" [] (nav state :cube))
-  (defroute signal-path "/signal" [] (nav state :signal))
   (defroute camera-path "/camera" [] (nav state :camera))
   (defroute gol-path "/game-of-life" [] (nav state :game-of-life))
   (defroute fol-path "/face-of-life" [] (nav state :face-of-life))
-  (defroute photos-path "/photos" [] (nav state :photos))
+  (defroute wordcloud-path "/wordcloud" [] (nav state :wordcloud))
   (defroute etc-path "*" [] (nav state :home)))
