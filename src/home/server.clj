@@ -11,11 +11,19 @@
 
 (defonce server (atom nil))
 
-(defn client
-  [_]
+(defn html
+  [resource]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body (slurp (io/resource "public/index.html"))})
+   :body (slurp (io/resource resource))})
+
+(defn client
+  [_]
+  (html "public/index.html"))
+
+(defn resume
+  [_]
+  (html "static/resume.html"))
 
 (defn words
   [{{:strs [url]} :params}]
@@ -25,6 +33,7 @@
 
 (def routes
   [["/words.json" :words words]
+   ["/resume" :resume resume]
    ["/" :client client]])
 
 (def router

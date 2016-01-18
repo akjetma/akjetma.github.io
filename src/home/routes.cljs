@@ -32,8 +32,6 @@
 
 (defn define-routes!
   [state]
-  (defroute landing-path "/" [] (unsafe-nav state (rand-nth (:things @state))))
-  (defroute home-path "/home" [] (unsafe-nav state :home))
   (defroute sorter-path "/sorter" [] (nav state :sorter))
   (defroute matrix-path "/matrix" [] (nav state :matrix))
   (defroute cube-path "/cube" [] (nav state :cube))

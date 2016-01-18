@@ -9,6 +9,10 @@
   (:import goog.History
            goog.Uri))
 
+(extend-type js/NodeList
+  ISeqable
+  (-seq [array] (array-seq array 0)))
+
 (defn navigate
   [state token]
   (swap! state update :nav-count inc)

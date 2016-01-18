@@ -3,4 +3,7 @@
 (defn page
   [state]
   [:div#home-page
-   [:img {:src (str (:asset-prefix @state) "/img/wip.gif")}]])
+   [:div.box
+    [:ul
+     [:li "Hello! My name is Adam Jetmalani and sometimes I make web toys."]
+     [:li "I can write non-webtoy code too. " [:a.link {:href "/resume"} "Resume right here."]]]]])
