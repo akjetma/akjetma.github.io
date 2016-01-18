@@ -2,7 +2,7 @@
 
 (defn resource
   [state asset]
-  (str (:asset-path @state) asset))
+  (str (:asset-prefix @state) asset))
 
 (defn ^:export setgum
   []
