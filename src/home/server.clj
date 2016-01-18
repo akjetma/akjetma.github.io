@@ -21,10 +21,6 @@
   [_]
   (html "public/index.html"))
 
-(defn resume
-  [_]
-  (html "static/resume.html"))
-
 (defn words
   [{{:strs [url]} :params}]
   {:status 200
@@ -33,7 +29,6 @@
 
 (def routes
   [["/words.json" :words words]
-   ["/resume" :resume resume]
    ["/" :client client]])
 
 (def router

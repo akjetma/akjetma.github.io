@@ -1,4 +1,5 @@
-(ns home.page.home)
+(ns home.page.home
+  (:require [home.util :as util]))
 
 (defn page
   [state]
@@ -6,4 +7,4 @@
    [:div.box
     [:ul
      [:li "Hello! My name is Adam Jetmalani and sometimes I make web toys."]
-     [:li "I can write non-webtoy code too. " [:a.link {:href "/resume"} "Resume right here."]]]]])
+     [:li "I can write non-webtoy code too. Pretty resume " [:a.link {:href (util/resource state "/resume.html")} "here"] ". PDF resume " [:a.link {:href (util/resource state "/AdamJetmalani.pdf")} "here"] "."]]]])

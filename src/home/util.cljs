@@ -1,5 +1,9 @@
 (ns home.util)
 
+(defn resource
+  [state asset]
+  (str (:asset-path @state) asset))
+
 (defn ^:export setgum
   []
   (when-let [gum (some (partial aget js/navigator)
