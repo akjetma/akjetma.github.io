@@ -1,7 +1,7 @@
 (ns home.support)
 
 (def everything
-  [:home :sorter :matrix :cube :camera :game-of-life :face-of-life :wordcloud])
+  [:sorter :matrix :cube :camera :game-of-life :face-of-life])
 
 (def browser-things
   {:chrome everything
