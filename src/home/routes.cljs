@@ -21,16 +21,19 @@
    :wordcloud wordcloud/page
    :unsupported unsupported/page})
 
+(defn unsafe-nav
+  [state page]
+  (swap! state assoc :current-page page))
+
 (defn nav
   [state page]
-  (if (some #{page} (:things @state))
-    (swap! state assoc :current-page page)
-    (swap! state assoc :current-page :unsupported)))
+  (let [page (some #{page} (:things @state))]
+    (unsafe-nav state (or page :unsupported))))
 
 (defn define-routes!
   [state]
-  (defroute landing-path "/" [] (nav state (rand-nth (:things @state))))
-  (defroute home-path "/home" [] (nav state :home))
+  (defroute landing-path "/" [] (unsafe-nav state (rand-nth (:things @state))))
+  (defroute home-path "/home" [] (unsafe-nav state :home))
   (defroute sorter-path "/sorter" [] (nav state :sorter))
   (defroute matrix-path "/matrix" [] (nav state :matrix))
   (defroute cube-path "/cube" [] (nav state :cube))
@@ -38,4 +41,4 @@
   (defroute gol-path "/game-of-life" [] (nav state :game-of-life))
   (defroute fol-path "/face-of-life" [] (nav state :face-of-life))
   (defroute wordcloud-path "/wordcloud" [] (nav state :wordcloud))
-  (defroute etc-path "*" [] (nav state :home)))
+  (defroute etc-path "*" [] (unsafe-nav state :home)))
