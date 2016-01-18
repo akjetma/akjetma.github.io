@@ -19,7 +19,7 @@
   (secretary/dispatch! token))
 
 (defn asset-prefix []
-  (or (.-ASSET_PREFIX js/window) ""))
+  (or (aget js/window "ASSET_PREFIX") ""))
 
 (defn initialize-state!
   [state]
