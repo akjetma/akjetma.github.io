@@ -15,7 +15,7 @@
                  [reagent "0.5.1"]
                  [secretary "1.2.3"]
                  [cljs-ajax "0.5.2"]
-                 [akjetma/woolpack "0.1.0"]]
+                 [akjetma/woolpack "0.1.2"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.5.0-1"]]
