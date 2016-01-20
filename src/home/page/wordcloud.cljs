@@ -1,7 +1,8 @@
 (ns home.page.wordcloud
   (:require [ajax.core :as http]
-            [woolpack.core :as cloud]
-            [reagent.core :as reagent]))
+            [home.debug :as cloud]
+            [reagent.core :as reagent]
+            [home.util :as util]))
 
 (defn rotate
   [deg & [[x y]]]
@@ -34,13 +35,15 @@
 
 (defn cloud
   [state words selected x-max y-max]
-  (let [ww (- (.-innerWidth js/window) 20)
+  (let [page (.getElementById js/document "page")
+        ww (- (.-offsetWidth page) 20)
         wh (- (.-innerHeight js/window) 20)
         ratio (min (/ ww x-max) (/ wh y-max))]
     [:div#wordcloud 
      {:style {:transform (str "scale(" ratio ")")
               :transform-origin "0px 0px"
-              :transition "transform 1s"}}
+              :transition "transform 1s"
+              :width "0px"}}
      (for [word selected]
        ^{:key word}
        [wisp state (get words word)])]))
@@ -121,37 +124,49 @@
 
 (defn handle-words
   [state response]
-  (let [raw
-        (into 
-         {}
-         (map
-          (fn [[word size]] [word {:word word :size size}])
-          (take 100 (sort-by last > response))))]
+  (let [biggest (apply max (vals response))
+        scale (/ 100 biggest)
+        raw (into {} (map
+                      (fn [[word size]] [word {:word word :size (* scale size)}])
+                      (take 100 (sort-by last > response))))]
     (swap! state assoc :wc-raw raw :wc-loading false)))
 
 (defn handle-error
-  [state {:keys [status-text]}]
-  (swap! state assoc :wc-loading false :wc-error status-text))
+  [state {:keys [response status-text]}]
+  (swap! state assoc 
+         :wc-loading false 
+         :wc-error (str status-text ": " response)))
 
 (defn get-words
   [state url]
   (swap! state assoc :wc-raw nil :wc-words nil :wc-selected nil :wc-error nil :wc-loading true)
-  (http/GET "https://akjetma.herokuapp.com/words.json" 
+  (http/GET (str (:server @state) "/words.json")
             {:handler (partial handle-words state)
              :error-handler (partial handle-error state)
              :params {:url url}}))
 
+(defn submit
+  [state url]
+  (if-let [url (or (util/url? url) 
+                   (util/url? (str "http://" url)))] 
+    (get-words state url)
+    (swap! state assoc :wc-error "Invalid URL :(")))
+
 (defn input
   [state]
   (let [{url :wc-url loaded :wc-words} @state]
-    [:div
-     [:p (if loaded "click on a word to remove it." "put a URL in here. i am too lazy to do validation just put http:// at the start okay? okay.")]
+    [:div     
      [:input {:type "text"
               :placeholder "http://cnn.com"
               :value url
-              :on-change #(swap! state assoc :wc-url (-> % .-target .-value))}]
+              :on-change #(swap! state assoc :wc-url (-> % .-target .-value))
+              :on-key-down #(when (= (.-keyCode %) 13) (submit state url))}]
      [:button {:disabled (not url)
-               :on-click #(get-words state url)} "Go"]]))
+               :on-click #(submit state url)} 
+      "Go"]
+     (when loaded
+       [:span 
+        " click on a word to remove it"])]))
 
 (defn page
   [state]

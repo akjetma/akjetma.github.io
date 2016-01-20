@@ -31,6 +31,7 @@
     (reset! 
      state 
      {:browser browser
+      :server "https://akjetma.herokuapp.com"
       :asset-prefix (asset-prefix)
       :things (get support/browser-things browser)
       :show-inspector? false

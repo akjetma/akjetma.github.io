@@ -11,6 +11,18 @@
 
 (defonce server (atom nil))
 
+(defn wrap-error
+  [app]
+  (fn [request]
+    (try
+      (app request)
+      (catch Exception e
+        (let [msg (.getMessage e)]
+          (println msg)
+          {:status 400
+           :headers {"Content-Type" "text/html"}
+           :body msg})))))
+
 (defn html
   [resource]
   {:status 200
@@ -35,6 +47,7 @@
   (-> routes
       polaris/build-routes
       polaris/router
+      wrap-error
       (wrap-resource "public")
       wrap-content-type
       wrap-params
