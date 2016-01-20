@@ -5,9 +5,13 @@
             [goog.history.EventType :as EventType]
             [home.routes :as routes]
             [home.component.app :as app]
-            [home.support :as support])
+            [home.support :as support]
+            [devtools.core :as devtools])
   (:import goog.History
            goog.Uri))
+
+(enable-console-print!)
+(devtools/install!)
 
 (extend-type js/NodeList
   ISeqable
@@ -51,7 +55,6 @@
   []
   (let [state (reagent/atom {})
         history (History.)]
-    (enable-console-print!)
     (initialize-state! state)
     (routes/define-routes! state)
     (initialize-secretary! state history)

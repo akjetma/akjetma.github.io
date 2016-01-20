@@ -12,11 +12,16 @@
   [dx dy]
   (str "translate(" dx ", " dy ")"))
 
+(defn remove-word
+  [state word]
+  (swap! state update :wc-selected (partial remove #{word})))
+
 (defn wisp
-  [{:keys [word size transform]}]
-  ^{:key word}
+  [state {:keys [word size transform]}]
   [:span.text 
-   {:style {:font-size (str size "px")
+   {:on-click #(remove-word state word) 
+    :style {:cursor "pointer"
+            :font-size (str size "px")
             :font-family "Courier"
             :line-height "1em"
             :transform transform
@@ -28,47 +33,21 @@
    word])
 
 (defn cloud
-  ([words] (cloud words (.-innerWidth js/window) (.-innerHeight js/window)))
-  ([words x-max y-max]
-   (let [ww (- (.-innerWidth js/window) 20)
-         wh (- (.-innerHeight js/window) 20)
-         ratio (min (/ ww x-max) (/ wh y-max))]
-     [:div#wordcloud 
-      {:style {:transform (str "scale(" ratio ")")
-               :transform-origin "0px 0px"
-               :transition "transform 1s"}}
-      (map wisp words)])))
+  [state words selected x-max y-max]
+  (let [ww (- (.-innerWidth js/window) 20)
+        wh (- (.-innerHeight js/window) 20)
+        ratio (min (/ ww x-max) (/ wh y-max))]
+    [:div#wordcloud 
+     {:style {:transform (str "scale(" ratio ")")
+              :transform-origin "0px 0px"
+              :transition "transform 1s"}}
+     (for [word selected]
+       ^{:key word}
+       [wisp state (get words word)])]))
 
-(defn cloud-word
-  [elem]
-  (let [width (.-offsetWidth elem)
-        height (.-offsetHeight elem)]
-    {:word (.-textContent elem)
-     :size height
-     :width width
-     :height height}))
 
-(defn determine-sizes
-  [state]
-  (let [elems (.querySelectorAll js/document "#wordcloud .text")
-        words (map cloud-word elems)]
-    (swap! state assoc :wc-words words)))
 
-(defn render-for-sizing
-  [state words]
-  (let [words
-        (map
-         (fn [[word size]]
-           {:word word 
-            :size size})
-         words)]
-    [cloud words 100 100]))
-
-(defn size-check
-  [state words]
-  (reagent/create-class
-   {:reagent-render render-for-sizing
-    :component-did-mount #(determine-sizes state)}))
+;; v----- display layout -----v
 
 (defn render-transform
   "add the transform property to a positioned word"
@@ -89,9 +68,66 @@
   (render-transforms
    (cloud/billow words)))
 
+(defn display-cloud
+  [state words chosen]
+  (let [{:keys [x-max y-max placed]} (make-cloud (map (partial get words) chosen))
+        w-map (into {} (map (juxt :word identity) placed))]
+    [cloud state w-map chosen x-max y-max]))
+
+;; ^----- display layout -----^
+
+
+
+;; v----- initial layout -----v
+
+(defn dimension
+  [elem]
+  (let [width (.-offsetWidth elem)
+        height (.-offsetHeight elem)]
+    {:word (.-textContent elem)
+     :size height
+     :width width
+     :height height}))
+
+(defn calculate
+  [state]
+  (let [elems (.querySelectorAll js/document "#wordcloud .text")
+        words (map dimension elems)
+        words (into {} (map (juxt :word identity) words))]
+    (swap! state assoc :wc-words words :wc-selected (-> words keys shuffle))))
+
+(defn layout
+  [state words]
+  [cloud state words (keys words) 100 100])
+
+(defn compute
+  [state words]
+  (reagent/create-class
+   {:reagent-render layout
+    :component-did-mount #(calculate state)}))
+
+(defn load-words
+  [state words]
+  [:div
+   [:h2 "rendering..."]
+   [:div {:style {:visibility "hidden"}}
+    [compute state words]]])
+
+;; ^----- initial layout -----^
+
+
+
+;; v---------- page ----------v
+
 (defn handle-words
   [state response]
-  (swap! state assoc :wc-raw response :wc-loading false))
+  (let [raw
+        (into 
+         {}
+         (map
+          (fn [[word size]] [word {:word word :size size}])
+          (take 100 (sort-by last > response))))]
+    (swap! state assoc :wc-raw raw :wc-loading false)))
 
 (defn handle-error
   [state {:keys [status-text]}]
@@ -99,45 +135,33 @@
 
 (defn get-words
   [state url]
-  (swap! state assoc :wc-raw nil :wc-words nil :wc-error nil :wc-loading true)
-  (http/GET "https://akjetma.herokuapp.com/words.json" {:handler (partial handle-words state)
-                                                        :error-handler (partial handle-error state)
-                                                        :params {:url url}}))
+  (swap! state assoc :wc-raw nil :wc-words nil :wc-selected nil :wc-error nil :wc-loading true)
+  (http/GET "https://akjetma.herokuapp.com/words.json" 
+            {:handler (partial handle-words state)
+             :error-handler (partial handle-error state)
+             :params {:url url}}))
 
 (defn input
   [state]
   (let [url (:wc-url @state)]
     [:div
+     [:p "click on a word to remove it."]
      [:input {:type "text"
               :placeholder "http://cnn.com"
               :value url
               :on-change #(swap! state assoc :wc-url (-> % .-target .-value))}]
-     [:button {:on-click #(get-words state url)} "Go"]]))
-
-(defn display-cloud
-  [state words]
-  (let [{:keys [x-max y-max placed runs]} (make-cloud words)]
-    (fn [_ _]
-      [cloud placed x-max y-max])))
-
-(defn load-words
-  [state words]
-  [:div
-   [:h2 "rendering..."]
-   [:div {:style {:visibility "hidden"}}
-    [size-check state words]]])
+     [:button {:disabled (not url)
+               :on-click #(get-words state url)} "Go"]]))
 
 (defn page
   [state]
-  (let [{:keys [wc-raw wc-words wc-take wc-drop wc-loading wc-error]} @state
-        wc-drop (or wc-drop 0)
-        wc-take (or wc-take 100)]
+  (let [{:keys [wc-raw wc-words wc-loading wc-error wc-selected]} @state]
     [:div {:style {:padding "10px"}}
      [input state]
      (cond
        wc-loading [:h2 "loading..."]
        wc-error [:h4 wc-error]
-       wc-words [display-cloud state (->> wc-words (drop wc-drop) (take wc-take) shuffle)]         
+       wc-words [display-cloud state wc-words wc-selected]
        wc-raw [load-words state wc-raw])]))
 
 
