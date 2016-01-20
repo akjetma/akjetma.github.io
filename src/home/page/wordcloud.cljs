@@ -156,8 +156,9 @@
   [state]
   (let [{url :wc-url loaded :wc-words} @state]
     [:div     
-     [:input {:type "text"
-              :placeholder "http://cnn.com"
+     [:input {:style {:width "250px" :max-width "100%"}
+              :type "text"
+              :placeholder "http://url-of-webpage-to-wordcloudify.com"
               :value url
               :on-change #(swap! state assoc :wc-url (-> % .-target .-value))
               :on-key-down #(when (= (.-keyCode %) 13) (submit state url))}]
