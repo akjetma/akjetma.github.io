@@ -145,7 +145,7 @@
   [state]
   (let [{url :wc-url loaded :wc-words} @state]
     [:div
-     [:p (if loaded "click on a word to remove it." "put a URL in here")]
+     [:p (if loaded "click on a word to remove it." "put a URL in here. i am too lazy to do validation just put http:// at the start okay? okay.")]
      [:input {:type "text"
               :placeholder "http://cnn.com"
               :value url
