@@ -1,15 +1,5 @@
 (defproject home "0.1.0"
-  :dependencies [;; clojure:
-                 [org.clojure/clojure "1.7.0"]
-                 [http-kit "2.1.18"]
-                 [polaris "0.0.15"]
-                 [ring "1.4.0"]
-                 [ring-cors "0.1.7"]
-                 [enlive "1.1.6"]
-                 [org.clojure/data.json "0.2.6"]                 
-                 [org.clojure/math.numeric-tower "0.0.4"]
-                 
-                 ;; clojurescript:
+  :dependencies [[org.clojure/clojure "1.7.0"]                                 
                  [org.clojure/clojurescript "1.7.145"]                 
                  [binaryage/devtools "0.4.1"]
                  [reagent "0.5.1"]
@@ -19,8 +9,6 @@
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.5.0-1"]]
-
-  :main home.server
 
   :source-paths ["src"]
 
