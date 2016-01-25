@@ -1,7 +1,7 @@
 (defproject home "0.1.0"
   :dependencies [[org.clojure/clojure "1.7.0"]                                 
                  [org.clojure/clojurescript "1.7.145"]                 
-                 [binaryage/devtools "0.4.1"]
+                 [binaryage/devtools "0.5.2"]
                  [reagent "0.5.1"]
                  [secretary "1.2.3"]
                  [cljs-ajax "0.5.2"]
