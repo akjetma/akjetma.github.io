@@ -1,6 +1,6 @@
 (ns home.page.wordcloud
   (:require [ajax.core :as http]
-            [home.debug :as cloud]
+            [woolpack.core :as cloud]
             [reagent.core :as reagent]
             [home.util :as util]))
 
