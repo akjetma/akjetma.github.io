@@ -41,7 +41,7 @@ jsh.shader.createVideoTexture = function(gl) {
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   jsh.shader.setWrapScale(gl, gl.CLAMP_TO_EDGE, gl.NEAREST);
-  jsh.shader.texImage2D(gl, null);
+  jsh.shader.texImage2D(gl, null, [0, 0]);
   gl.bindTexture(gl.TEXTURE_2D, null);
   return tex;
 };
