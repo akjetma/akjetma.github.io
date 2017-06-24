@@ -178,7 +178,7 @@
   (let [translation (grid-place num-columns rank)]
     [:div.item 
      {:style 
-      {:background-color (str "hsl(" hue ", 100%, 50%)")
+      {:background-color (str "hsl(" hue ", 50%, 70%)")
        :z-index (- id)
        :transform translation
        :-webkit-transform translation}

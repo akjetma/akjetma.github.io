@@ -18,7 +18,7 @@
       (let [ident (file->post-ident file)]
         [ident (assoc file
                       :ident ident
-                      :html (md/md->html (:body file)))]))
+                      :post (md/md->html-with-meta (:body file)))]))
     (macros/list-files "resources/blog/posts"))))
 
 (defn render-post
@@ -27,7 +27,7 @@
    [:a.return-link {:href "/#/blog"} "<-- back"]
    [:div.body
     {:dangerouslySetInnerHTML 
-     {:__html (get-in posts [post :html])}}]])
+     {:__html (get-in posts [post :post :html])}}]])
 
 (defn post-list
   []
