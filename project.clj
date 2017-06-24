@@ -22,7 +22,7 @@
                 :source-paths ["src"]
                 :figwheel {:on-jsload "home.client/load"}
                 :compiler {:main home.client
-                           :asset-path "js/out"
+                           :asset-path "resources/public/js/out"
                            :libs ["homejs"]
                            :output-to "resources/public/js/app.js"
                            :output-dir "resources/public/js/out"
