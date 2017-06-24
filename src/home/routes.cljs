@@ -1,6 +1,7 @@
 (ns home.routes
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [home.page.home :as home]
+            [home.page.blog :as blog]            
             [home.page.sorter :as sorter]
             [home.page.matrix :as matrix]
             [home.page.cube :as cube]
@@ -12,6 +13,7 @@
 
 (def page-map
   {:home home/page
+   :blog blog/page
    :sorter sorter/page
    :matrix matrix/page
    :cube cube/page
@@ -33,6 +35,7 @@
 (defn define-routes!
   [state]
   (defroute sorter-path "/sorter" [] (nav state :sorter))
+  (defroute blog-path "/blog" [] (nav state :blog))
   (defroute matrix-path "/matrix" [] (nav state :matrix))
   (defroute cube-path "/cube" [] (nav state :cube))
   (defroute camera-path "/camera" [] (nav state :camera))
