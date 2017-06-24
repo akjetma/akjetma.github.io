@@ -5,30 +5,20 @@
 // home.page.home ----------------------------------------------------------------------------------
 
 #home-page {
+    height: 100%;
     display: flex;
     justify-content: center;
-    padding: 100px 10px 10px 10px;
-
-    .box {
-        padding: 10px 10px 10px 30px;
-        border-radius: 10px;
-        border: 1px solid black;
-
-        ul {
-            list-style: disc outside none;
-            
-            li {
-                padding: 5px 0;
-            }
-        }
-    }
-
-    .link {
-        color: #1122DD;
-    }
+    align-items: center;
+    animation: 10s home-page-fade alternate infinite;
 }
 
-
+@keyframes home-page-fade {
+    0%   { background-color: #A0767B; }
+    25%  { background-color: #F27C74; }
+    50%  { background-color: #A4A6BF; }
+    75%  { background-color: #C9E2D4; }
+    100% { background-color: #E1F2D7; }
+}
 
 // home.page.sorter --------------------------------------------------------------------------------
 

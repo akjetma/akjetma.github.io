@@ -42,6 +42,98 @@
         [id (update item :rank #(- item-max %))])
       item-map))))
 
+(defn ring-mapping
+  [matrix]
+  (let [M (count matrix)
+        N (count (first matrix))
+        max-depth (quot (min M N) 2)
+        rings (mapv
+               (fn [d]
+                 (vec
+                  (concat 
+                   ;; top-left -> ~top-right
+                   (mapv #(vector d %) (range d (- N d 1)))
+                   
+                   ;; top-right -> ~bottom-right
+                   (mapv #(vector % (- N d 1)) (range d (- M d 1)))
+                   
+                   ;; bottom-right -> ~bottom-left
+                   (mapv #(vector (- M d 1) %) (reverse (range (+ d 1) (- N d))))
+                   
+                   ;; bottom-left -> ~top-left
+                   (mapv #(vector % d) (reverse (range (+ d 1) (- M d)))))))
+               (range max-depth))]
+    (if (and (even? M) (even? N))
+      rings
+      (conj rings
+            (vec
+             (mapcat
+              (fn [i] 
+                (mapv 
+                 (fn [j]
+                   [i j])
+                 (range max-depth (- N max-depth))))
+              (range max-depth (- M max-depth))))))))
+
+(defn leftshift
+  [v n]
+  (let [rightshift (mod n (count v))]
+    (vec (take-last (count v) (take (+ (count v) rightshift) (cycle v))))))
+
+(defn unfurl
+  [matrix mapping]
+  (mapv
+   (fn [ring]
+     (mapv (partial get-in matrix) ring))
+   mapping))
+
+(defn rebuild
+  [matrix unfurled mapping]
+  (reduce
+   (fn [matrix [[row col] v]]
+     (assoc-in matrix [row col] v))
+   matrix
+   (apply concat
+          (map-indexed
+           (fn [ring-index ring]
+             (map-indexed
+              (fn [notch-index origin]
+                [origin (get-in unfurled [ring-index notch-index])])
+              ring))
+           mapping))))
+
+(defn leftshift-matrix
+  [matrix shift-n]
+  (let [mapping (ring-mapping matrix)
+        unfurled (unfurl matrix mapping)
+        shifted (mapv #(leftshift % shift-n) unfurled)]
+    (rebuild matrix shifted mapping)))
+
+(defn items-to-matrix
+  [item-map num-columns]
+  (let [num-items (count item-map)
+        pseudo-mat (mapv vec (partition-all num-columns (sort-by (comp :rank val) item-map)))
+        last-row (last pseudo-mat)]
+    (conj (vec (butlast pseudo-mat))
+          (vec (concat (repeat (- num-columns (count last-row)) nil) last-row)))))
+
+(defn matrix-to-items
+  [item-matrix]
+  (into 
+   {}
+   (map-indexed
+    (fn [mat-idx item-kv]
+      (when-let [[id item] item-kv]
+        [id (assoc item :rank mat-idx)]))
+    (remove nil? (apply concat item-matrix)))))
+
+(defn rotate-items
+  [item-map num-columns]
+  (-> item-map
+      (items-to-matrix num-columns)
+      (leftshift-matrix 1)
+      (matrix-to-items)))
+
 (defn rank-by-hue
   [item-map]
   (let [hue-sorted (sort-by (fn [[_ item]] (:hue item)) item-map)]
@@ -77,7 +169,9 @@
      [:div.sort-control.sort-type
       [:span.btn {:on-click #(swap! state update-in [:sorter :items] shuffle-ranks)} (:shuffle emoji)]
       [:span.btn {:on-click #(swap! state update-in [:sorter :items] reverse-ranks)} (:reverse emoji)]
-      [:span.btn {:on-click #(swap! state update-in [:sorter :items] rank-by-hue)} (:rainbow emoji)]]]))
+      [:span.btn {:on-click #(swap! state update-in [:sorter :items] rank-by-hue)} (:rainbow emoji)]
+      [:span.btn {:on-click #(swap! state 
+                                    (fn [s] (update-in s [:sorter :items] rotate-items (-> s :sorter :num-columns))))} "rotate"]]]))
 
 (defn list-item
   [num-columns id {:keys [hue rank]}]

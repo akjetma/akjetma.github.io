@@ -3,5 +3,4 @@
 
 (defn page
   [state]
-  [:div#home-page
-   [:div "Adam Jetmalani"]])
+  [:div#home-page])
