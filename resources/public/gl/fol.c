@@ -39,10 +39,10 @@ float intensity() {
 float detectEdge() {
   float diff = 0.0;
   vec4 corners[4];
-  corners[0] = getVideo(vec2(-1.0, -1.0));
-  corners[1] = getVideo(vec2(-1.0, 1.0));
-  corners[2] = getVideo(vec2(1.0, -1.0));
-  corners[3] = getVideo(vec2(1.0, 1.0));
+  corners[0] = getVideo(vec2(-0.5, -0.5));
+  corners[1] = getVideo(vec2(-0.5, 0.5));
+  corners[2] = getVideo(vec2(0.5, -0.5));
+  corners[3] = getVideo(vec2(0.5, 0.5));
 
   for (int chan=0; chan<=2; chan++) {
     diff += abs(corners[0][chan] - corners[3][chan]);
@@ -58,11 +58,13 @@ void main() {
   float light = intensity();
   
   if (sum == 3) {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  } else if (sum == 2 || edge >= 0.3) {
+    gl_FragColor = vec4(1.0, 0.48, 0.45, 1.0);
+  } else if (sum == 2) {
     float current = float(getState(vec2(0.0, 0.0)));
-    gl_FragColor = vec4(current, current, current, 1.0);  
+    gl_FragColor = vec4(current, 0.48, 0.45, 1.0);
+  } else if (edge > 1.0) {
+    gl_FragColor = vec4(edge, 0.48, 0.45, 1.0);
   } else {
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    gl_FragColor = vec4(light / 3.0, 0.48, 0.45, 1.0);
   }
 }

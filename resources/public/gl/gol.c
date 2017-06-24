@@ -25,11 +25,11 @@ void main() {
   int sum = getSum();
   
   if (sum == 3) {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    gl_FragColor = vec4(1.0, 0.48, 0.45, 1.0);
   } else if (sum == 2) {
     float current = float(get(vec2(0.0, 0.0)));
-    gl_FragColor = vec4(current, current, current, 1.0);
+    gl_FragColor = vec4(current, 0.48, 0.45, 1.0);
   } else {
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    gl_FragColor = vec4(0.0, 0.48, 0.45, 1.0);
   }
 }
