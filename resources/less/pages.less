@@ -7,15 +7,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: 10s home-page-fade alternate infinite;
+    animation: @color-fade-rate home-page-fade alternate infinite;
 }
 
 @keyframes home-page-fade {
     0%   { background-color: @color-1; }
-    25%  { background-color: @color-2; }
-    50%  { background-color: @color-3; }
-    75%  { background-color: @color-4; }
-    100% { background-color: @color-5; }
+    20%  { background-color: @color-2; }
+    40%  { background-color: @color-3; }
+    60%  { background-color: @color-4; }
+    80%  { background-color: @color-5; }
+    100%  { background-color: @color-6; }
 }
 
 
