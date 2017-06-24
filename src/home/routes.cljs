@@ -34,12 +34,26 @@
 
 (defn define-routes!
   [state]
+  (defroute blog-list-path "/blog" []
+    (swap! state assoc-in [:blog :post] nil)
+    (nav state :blog))
+
+  (defroute blog-post-path "/blog/:post" [post]
+    (swap! state assoc-in [:blog :post] (keyword post))
+    (nav state :blog))
+
   (defroute sorter-path "/sorter" [] (nav state :sorter))
-  (defroute blog-path "/blog" [] (nav state :blog))
+  
   (defroute matrix-path "/matrix" [] (nav state :matrix))
+  
   (defroute cube-path "/cube" [] (nav state :cube))
+  
   (defroute camera-path "/camera" [] (nav state :camera))
+  
   (defroute gol-path "/game-of-life" [] (nav state :game-of-life))
+  
   (defroute fol-path "/face-of-life" [] (nav state :face-of-life))
+  
   (defroute wordcloud-path "/wordcloud" [] (nav state :wordcloud))
+  
   (defroute etc-path "*" [] (unsafe-nav state :home)))
