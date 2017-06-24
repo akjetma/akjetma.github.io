@@ -2,6 +2,7 @@
 
 
 
+
 // home.page.home ----------------------------------------------------------------------------------
 
 #home-page {
@@ -20,9 +21,14 @@
     100% { background-color: #E1F2D7; }
 }
 
+
+
+
 // home.page.sorter --------------------------------------------------------------------------------
 
 #sorter-page {
+    .btn { cursor: pointer; }
+
     padding: 5px;
     display: flex;
     flex-direction: column;
@@ -114,6 +120,7 @@
         justify-content: center;
     }
 }
+
 
 
 
@@ -224,28 +231,6 @@
 
 
 
-// home.page.signal --------------------------------------------------------------------------------
-
-#signal-page {
-    .scene {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .row {
-        display: flex;
-    }
-
-    .cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 40px;
-        height: 40px;
-    }
-}
-
-
 
 // home.page.camera --------------------------------------------------------------------------------
 
@@ -270,12 +255,24 @@
 
 
 
+
 // home.page.shader, home.page.shader-2 ------------------------------------------------------------
 
 .shader-page {
     height: 100vh;
     overflow-x: hidden;
 }
+
+
+
+
+// home.page.wordcloud -----------------------------------------------------------------------------
+
+#wordcloud-page {
+    h2 { font-size: 30px; }
+    h4 { font-size: 20px; }
+}
+
 
 
 
@@ -289,6 +286,7 @@
     padding: 20px;
 
     > h1 {
+        font-size: 50px; 
         text-align: center;
     }
 }

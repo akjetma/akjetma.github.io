@@ -1,27 +1,11 @@
-@glacier: #000;
+@text-primary: #000;
 @breakpoint: 865px;
 
 body {
-    font-family: "Helvetica Neue";
+    font-family: "Helvetica";
     background-color: #fff;
-    color: @glacier;
+    color: @text-primary;
 }
-
-a {
-    color: @glacier;
-    text-decoration: none;
-    &:hover { text-decoration: underline; }
-}
-
-h1 { font-size: 50px; }
-h2 { font-size: 30px; }
-h4 { font-size: 20px; }
-
-.btn { cursor: pointer; }
-
-
-
-// -------------------------------------------------------------------------------------------------
 
 
 
@@ -45,6 +29,12 @@ h4 { font-size: 20px; }
 }
 
 #bar {
+    a {
+        color: @text-primary;
+        text-decoration: none;
+        &:hover { text-decoration: underline; }
+    }
+    
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -78,7 +68,7 @@ h4 { font-size: 20px; }
         border-bottom: 1px solid #fff;
         color: #ccc;
         &:hover {
-            border-color: @glacier;
+            border-color: @text-primary;
         }
     }
 
@@ -97,7 +87,7 @@ h4 { font-size: 20px; }
         }
 
         .thing-list .thing {
-            border-bottom: 1px solid lighten(@glacier, 90%);
+            border-bottom: 1px solid lighten(@text-primary, 90%);
         }
 
     }
@@ -150,16 +140,17 @@ h4 { font-size: 20px; }
         height: 80px;
         padding: 10px;
     }
+
+    code.edn-map .pair > .key { color: #f00; margin-right: 1em; }
 }
 
 #inspector-toggle {
-    background-color: @glacier;
+    background-color: @text-primary;
     color: #fff;
     position: absolute;
     top: -30px;
     right: 7px;
-    border: 3px solid @glacier;
+    border: 3px solid @text-primary;
     cursor: pointer;
 }
 
-code.edn-map .pair > .key { color: #f00; margin-right: 1em; }

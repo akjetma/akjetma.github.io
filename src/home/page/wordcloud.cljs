@@ -172,7 +172,7 @@
 (defn page
   [state]
   (let [{:keys [wc-raw wc-words wc-loading wc-error wc-selected]} @state]
-    [:div {:style {:padding "10px"}}
+    [:div#wordcloud-page {:style {:padding "10px"}}
      [input state]
      (cond
        wc-loading [:h2 "loading..."]
