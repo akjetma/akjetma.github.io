@@ -13,7 +13,7 @@
 
 (def page-map
   {:home home/page
-   :blog blog/page
+  ;  :blog blog/page
    :sorter sorter/page
    :matrix matrix/page
    :cube cube/page
