@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "compiling LESS"
-lessc -sm=on resources/less/home.less resources/public/css/home.css --autoprefix="last 1 version, > 10%" --clean-css
-echo "LESS compiled"
