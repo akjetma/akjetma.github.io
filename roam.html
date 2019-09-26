@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+
+      canvas {
+          width: 100%;
+          height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script type="text/javascript">
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext("2d");
+        const { width, height } = document.body.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const f_mag = 1/4;
+        const freedom = { x: width*f_mag, y: height*f_mag };
+        
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+
+        const bounded = (min, v, max) => {
+            let vv = Math.max(min, v);
+            vv = Math.min(max, vv);
+            return vv;
+        }
+
+        const getNext = (point) => {
+            return {
+                x: bounded(0,
+                           point.x + (Math.random()*2-1) * freedom.x,
+                           width),
+                y: bounded(0,
+                           point.y + (Math.random()*2-1) * freedom.y,
+                           height)
+            }
+        }
+
+        const animate = (current) => {
+            const a1 = getNext(current);
+            const a2 = getNext(a1);
+            const a3 = getNext(a2);
+            context.bezierCurveTo(a1.x, a1.y, a2.x, a2.y, a3.x, a3.y);
+            context.stroke();
+            window.requestAnimationFrame((t) => { 
+                animate(a3); 
+            });
+        }
+
+        context.scale(dpr, dpr);
+
+        let center = { x: width/2, y: height/2 };
+        context.moveTo(center.x, center.y);
+        context.beginPath();
+
+        window.requestAnimationFrame((t) => {
+            animate(center);
+        });
+    </script>
+  </body>
+</html>
