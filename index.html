@@ -10,6 +10,9 @@
 
             /* remove whitespace at bottom of page */
             line-height: 0;
+
+            cursor: pointer;
+            background-color: black;
         }
 
         video {
@@ -26,17 +29,12 @@
   </body>
   <script>
 
-    Array.prototype.getRandom = function() {
-      return this[Math.floor(Math.random() * this.length)];
-    }
-
-    const videoPrefix = "video/";
-    const videoExtension = ".m4v";
-    const videoFiles = ["fan", "window", "ceiling"];
-    const videoSrc = videoPrefix + videoFiles.getRandom() + videoExtension;
+    const videoFiles = ["video/ceiling.m4v", "video/fan.m4v", "video/window.m4v"];
+    let currentVideoIndex = Math.floor(Math.random() * videoFiles.length);
 
     const videoElement = document.querySelector("video");
-    videoElement.src = videoSrc;
+    videoElement.src = videoFiles[currentVideoIndex++]
+    videoElement.onclick = (e) => e.target.src = videoFiles[currentVideoIndex++ % videoFiles.length];
     
   </script>
 </html>
