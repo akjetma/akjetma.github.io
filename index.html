@@ -26,15 +26,14 @@
   </body>
   <script>
 
-    // fan video isn't very interesting if the fan gets cropped out, 
-    // so use another video if the browser isn't wide enough.
+    Array.prototype.getRandom = function() {
+      return this[Math.floor(Math.random() * this.length)];
+    }
 
-    const minimumAspectRatioForFanVideo = 1.1;
-    const aspectRatioAtPageLoad = document.body.clientWidth / document.body.clientHeight;
-    const chosenVideoFile = (aspectRatioAtPageLoad >= minimumAspectRatioForFanVideo) ? "fan.m4v" : "window.m4v";
+    const videoFiles = ["fan.m4v", "window.m4v"];
+    const videoElement = document.querySelector("video");
 
-    const video = document.querySelector("video");    
-    video.src = chosenVideoFile;
-
+    videoElement.src = videoFiles.getRandom();
+    
   </script>
 </html>
