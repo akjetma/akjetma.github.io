@@ -2,22 +2,42 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <style>
-      body {
-        margin: 0;
-        height: 100vh;
-        
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        font-family: monospace;
-        font-size: 100px;
-      }
+        body {
+            margin: 0;
+
+            /* remove whitespace at bottom of page */
+            line-height: 0;
+        }
+
+        video {
+            width: 100vw;
+            height: 100vh;
+            
+            object-fit: cover;
+            object-position: center;
+        }
+
+        div {
+            /* v-align */
+            position: absolute;
+            top: 50%; 
+
+            /* h-align */
+            left: 0;
+            width: 100vw;
+            text-align: center;
+
+            color: white;
+            font-family: monospace;
+            font-size: 100px;
+        }
     </style>
   </head>
   <body>
-    <div>foo</div>
+    <video src="vid.m4v" muted autoplay loop></video>
+    <div>hello!</div>
   </body>
 </html>
