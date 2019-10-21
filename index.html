@@ -19,25 +19,22 @@
             object-fit: cover;
             object-position: center;
         }
-
-        div {
-            /* v-align */
-            position: absolute;
-            top: 50%; 
-
-            /* h-align */
-            left: 0;
-            width: 100vw;
-            text-align: center;
-
-            color: white;
-            font-family: monospace;
-            font-size: 100px;
-        }
     </style>
   </head>
   <body>
-    <video src="fan.m4v" muted autoplay loop></video>
-    <div>hello!</div>
+    <video muted autoplay loop></video>
   </body>
+  <script>
+
+    // fan video isn't very interesting if the fan gets cropped out, 
+    // so use another video if the browser isn't wide enough.
+
+    const minimumAspectRatioForFanVideo = 1.1;
+    const aspectRatioAtPageLoad = document.body.clientWidth / document.body.clientHeight;
+    const chosenVideoFile = (aspectRatioAtPageLoad >= minimumAspectRatioForFanVideo) ? "fan.m4v" : "window.m4v";
+
+    const video = document.querySelector("video");    
+    video.src = chosenVideoFile;
+
+  </script>
 </html>
