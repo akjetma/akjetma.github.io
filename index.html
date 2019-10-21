@@ -30,10 +30,13 @@
       return this[Math.floor(Math.random() * this.length)];
     }
 
-    const videoFiles = ["fan.m4v", "window.m4v"];
-    const videoElement = document.querySelector("video");
+    const videoPrefix = "video/";
+    const videoExtension = ".m4v";
+    const videoFiles = ["fan", "window", "ceiling"];
+    const videoSrc = videoPrefix + videoFiles.getRandom() + videoExtension;
 
-    videoElement.src = videoFiles.getRandom();
+    const videoElement = document.querySelector("video");
+    videoElement.src = videoSrc;
     
   </script>
 </html>
