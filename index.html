@@ -26,24 +26,24 @@
   </head>
   <body>
     <video muted autoplay loop></video>
-  </body>
-  <script>
-    const videoFiles = [
-      "video/leaves.m4v",
-      "video/winter.m4v",
-      "video/wall.m4v", 
-      "video/rain.m4v",
-      "video/water.m4v",
-      "video/fan.m4v", 
-      "video/ceiling.m4v",
-      "video/ceiling2.m4v",
-      // "video/window.m4v"
-    ];
-    
-    let currentVideoIndex = Math.floor(Math.random() * videoFiles.length);
+    <script>
+      const videoFiles = [
+        "video/leaves.m4v",
+        "video/winter.m4v",
+        "video/wall.m4v", 
+        "video/rain.m4v",
+        "video/water.m4v",
+        "video/fan.m4v", 
+        "video/ceiling.m4v",
+        "video/ceiling2.m4v",
+        // "video/window.m4v"
+      ];
+      
+      let currentVideoIndex = Math.floor(Math.random() * videoFiles.length);
 
-    const videoElement = document.querySelector("video");
-    videoElement.src = videoFiles[currentVideoIndex++]
-    videoElement.onclick = (e) => e.target.src = videoFiles[currentVideoIndex++ % videoFiles.length];
-</script>
+      const videoElement = document.querySelector("video");
+      videoElement.src = videoFiles[currentVideoIndex++]
+      videoElement.onclick = (e) => e.target.src = videoFiles[currentVideoIndex++ % videoFiles.length];
+    </script>
+  </body>
 </html>
