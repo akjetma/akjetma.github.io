@@ -42,7 +42,7 @@
       let currentVideoIndex = Math.floor(Math.random() * videoFiles.length);
 
       const videoElement = document.querySelector("video");
-      videoElement.src = videoFiles[currentVideoIndex++]
+      videoElement.src = videoFiles[currentVideoIndex++];
       videoElement.onclick = (e) => e.target.src = videoFiles[currentVideoIndex++ % videoFiles.length];
     </script>
   </body>
