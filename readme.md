@@ -1,0 +1,1 @@
+The source code for this site is at https://github.com/akjetma/eclectic
